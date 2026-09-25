@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ChargeMatch Nova Astuces : comparateur de chargeurs, câbles, chargeurs voiture et recharge sans fil pour smartphones, tablettes et ordinateurs.">
+<meta name="robots" content="index,follow">
+<title>ChargeMatch — Nova Astuces • Production 2026</title>
+<style>
+:root{--bg:#07111f;--panel:#0e1b2d;--text:#f7fbff;--muted:#9eb3c9;--accent:#38bdf8;--accent2:#4c79ff;--nova:#8d7bff;--ok:#34d399;--line:#22364f}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 18% 0%,#153a7a 0,transparent 34%),
+radial-gradient(circle at 90% 5%,#392a80 0,transparent 30%),
+linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height:100vh}.wrap{max-width:1120px;margin:auto;padding:18px}.hero{padding:28px 0 18px}.brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:.4px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2) 58%,var(--nova));display:grid;place-items:center;box-shadow:0 8px 32px #315cff55}h1{font-size:clamp(30px,6vw,56px);line-height:1.02;margin:18px 0 10px}.grad{background:linear-gradient(90deg,#ffffff,#56d8ff 42%,#4c79ff 72%,#8d7bff);-webkit-background-clip:text;color:transparent}.sub{color:var(--muted);font-size:17px;max-width:760px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.badge{font-size:12px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#0c1a2b;color:#cfe8ff}.card{position:relative;overflow:hidden;background:linear-gradient(180deg,#0d1934,#091329);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 18px 50px #0005}.card:before{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--nova));opacity:.75}
+.finder{display:grid;grid-template-columns:1fr auto;gap:10px;position:relative}input,button{font:inherit}.search{width:100%;padding:16px;border-radius:15px;border:1px solid #2d4561;background:#081523;color:#fff;outline:none;font-size:16px}.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px #00b8ff24}.btn{border:0;border-radius:14px;padding:14px 16px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2) 70%,var(--nova));color:#ffffff}.btn.secondary{background:#111f3d;color:#e5f4ff;border:1px solid #31538a}.resultsList{position:absolute;top:58px;left:0;right:120px;background:#081523;border:1px solid #2b4664;border-radius:14px;overflow:hidden;z-index:20;max-height:340px;overflow-y:auto;display:none}.resultItem{padding:12px 14px;border-bottom:1px solid #172b42;cursor:pointer}.resultItem:hover{background:#10243a}.meta{color:var(--muted);font-size:12px;margin-top:2px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}.device{grid-column:span 12}.rec{grid-column:span 6}@media(max-width:760px){.finder{grid-template-columns:1fr}.resultsList{right:0;top:110px}.rec{grid-column:span 12}}.deviceHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}.deviceName{font-size:26px;font-weight:900}.brandTag{font-size:12px;background:#12283f;border:1px solid #2c4967;border-radius:999px;padding:6px 9px;color:#aee3ff}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}.kpi{background:#091724;border:1px solid #1f354f;border-radius:14px;padding:12px}.kpi b{display:block;font-size:17px;margin-top:3px}.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase}.rec h3{margin:0 0 8px;font-size:18px}.big{font-size:26px;font-weight:900;margin:4px 0}.small{font-size:13px;color:var(--muted)}.line{height:1px;background:var(--line);margin:14px 0}.pill{display:inline-block;margin:4px 4px 0 0;padding:6px 8px;border-radius:10px;background:#0b2237;border:1px solid #25425f;color:#cce9ff;font-size:12px}.note{border-left:3px solid var(--accent);padding:10px 12px;background:#0a1b2b;border-radius:10px;color:#dcecff;margin-top:12px;font-size:13px}.aff{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.aff a{text-decoration:none}.hidden{display:none!important}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.filter{background:#0c1c2d;border:1px solid #29445f;color:#cde7ff;padding:9px 11px;border-radius:999px;cursor:pointer;font-size:13px}.filter.active{background:linear-gradient(135deg,#103b67,#263d8c);border-color:#00b8ff}.compareBox{margin-top:20px;background:#0b1929;border:1px solid var(--line);border-radius:18px;padding:16px}.selectedChip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;background:#0c2237;border:1px solid #2e5474;color:#dff4ff;font-size:13px}.selectedChip button{border:0;background:transparent;color:#fb7185;font-weight:900;cursor:pointer;padding:0 2px}.footer{color:#6f8aa6;font-size:12px;padding:30px 0 10px;text-align:center}.footnote{font-size:12px;color:#7f9bb7;line-height:1.5}.source a{color:#7dd3fc}
+</style>
+</head>
+<body><div class="wrap">
+<div class="hero"><div class="brand"><div class="logo">N</div>NOVA ASTUCES</div><h1><span class="grad">ChargeMatch</span><br>le comparateur qui trouve le bon chargeur.</h1><div class="sub">Choisis ton appareil. ChargeMatch te donne la puissance utile, le protocole, le câble adapté, le chargeur secteur, le chargeur voiture et la recharge sans fil — sans te faire acheter plus puissant que nécessaire.</div><div class="badges"><span class="badge">⚡ Charge secteur</span><span class="badge">🔌 Câble</span><span class="badge">🚗 Allume-cigare</span><span class="badge">🧲 Sans fil</span><span class="badge">📺 Données & vidéo</span></div></div>
+<div class="card"><div class="finder"><input id="q" class="search" placeholder="Ex. iPhone 16 Pro, Galaxy S25 Ultra, Pixel 10 Pro XL…" autocomplete="off"><button class="btn" id="randomBtn">Voir un exemple</button><div class="resultsList" id="resultsList"></div></div><div class="filters" id="filters"></div><div class="small" style="margin-top:10px"><span id="count"></span> appareils intégrés • recherche instantanée par marque ou modèle</div></div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="deviceHead">
+      <div>
+        <div class="deviceName" style="font-size:22px">Mode plusieurs appareils</div>
+        <div class="meta">Ajoute jusqu’à 5 appareils : ChargeMatch calcule le chargeur commun, le nombre de ports et les câbles.</div>
+      </div>
+      <span class="brandTag">MULTI</span>
+    </div>
+
+    <div class="finder" style="margin-top:14px">
+      <input id="mq" class="search" placeholder="Ajouter un appareil… ex. iPhone 16 Pro">
+      <button class="btn" id="addExampleBtn">Ajouter un exemple</button>
+      <div class="resultsList" id="mresultsList"></div>
+    </div>
+
+    <div id="selectedDevices" class="badges" style="margin-top:14px"></div>
+
+    <div class="aff" style="margin-top:14px">
+      <button class="btn" id="calcMultiBtn">Calculer mon ensemble</button>
+      <button class="btn secondary" id="clearMultiBtn">Effacer</button>
+    </div>
+
+    <div id="multiResult" class="hidden" style="margin-top:16px">
+      <div class="grid">
+        <div class="card rec">
+          <h3>⚡ Chargeur secteur commun</h3>
+          <div class="big" id="multiWall"></div>
+          <div class="small" id="multiWallWhy"></div>
+          <div class="line"></div>
+          <span class="pill" id="multiPorts"></span>
+          <span class="pill" id="multiProtocols"></span>
+        </div>
+
+        <div class="card rec">
+          <h3>🚗 Chargeur voiture commun</h3>
+          <div class="big" id="multiCar"></div>
+          <div class="small" id="multiCarWhy"></div>
+          <div class="line"></div>
+          <span class="pill">USB‑C PD recommandé</span>
+          <span class="pill" id="multiCarPorts"></span>
+        </div>
+      </div>
+
+      <div class="compareBox">
+        <b>🔌 Câbles nécessaires</b>
+        <div id="multiCables" style="margin-top:10px"></div>
+      </div>
+
+      <div class="compareBox">
+        <b>🎯 Recommandation Nova Astuces</b>
+        <div id="multiVerdict" style="margin-top:8px;line-height:1.55"></div>
+      </div>
+    </div>
+  </div>
+
+<div id="output" class="hidden"><div class="grid"><div class="card device"><div class="deviceHead"><div><div class="deviceName" id="dName"></div><div class="meta" id="dFamily"></div></div><span class="brandTag" id="dBrand"></span></div><div class="kpis"><div class="kpi"><span>Charge filaire</span><b id="wired"></b></div><div class="kpi"><span>Connecteur</span><b id="port"></b></div><div class="kpi"><span>Protocole</span><b id="proto"></b></div><div class="kpi"><span>Sans fil</span><b id="wireless"></b></div></div><div class="note" id="mainNote"></div></div>
+<div class="card rec"><h3>🏠 Chargeur secteur conseillé</h3><div class="big" id="wall"></div><div class="small" id="wallWhy"></div><div class="line"></div><span class="pill" id="wallProto"></span><span class="pill" id="wallPorts"></span><div class="aff"><a id="wallLink" href="#"><button class="btn secondary">Voir un chargeur compatible</button></a></div></div>
+<div class="card rec"><h3>🔌 Câble conseillé</h3><div class="big" id="cable"></div><div class="small" id="cableWhy"></div><div class="line"></div><span class="pill" id="cablePower"></span><span class="pill" id="cableData"></span><div class="aff"><a id="cableLink" href="#"><button class="btn secondary">Voir un câble compatible</button></a></div></div>
+<div class="card rec"><h3>🚗 Chargeur voiture conseillé</h3><div class="big" id="car"></div><div class="small" id="carWhy"></div><div class="line"></div><span class="pill" id="carProto"></span><span class="pill" id="carPorts"></span><div class="aff"><a id="carLink" href="#"><button class="btn secondary">Voir un chargeur voiture</button></a></div></div>
+<div class="card rec"><h3>🧲 Recharge sans fil</h3><div class="big" id="wirelessRec"></div><div class="small" id="wirelessWhy"></div><div class="line"></div><span class="pill" id="wirelessStd"></span></div></div>
+<div class="compareBox"><b>🎯 Verdict Nova Astuces</b><div id="verdict" style="margin-top:8px;line-height:1.55"></div><div class="aff"><button class="btn" id="copyBtn">Copier la recommandation</button></div></div><div class="card source" style="margin-top:16px"><b>ℹ️ À savoir</b><div class="footnote" id="sourceNote" style="margin-top:8px"></div></div></div>
+<div class="footer">ChargeMatch • Nova Astuces • Guide indicatif : la puissance réellement absorbée dépend de l’appareil, de la température, du niveau de batterie, du câble et du protocole du chargeur.<br><span id="affiliateDisclosure" style="display:none">Certains liens peuvent être affiliés : Nova Astuces peut percevoir une commission sans surcoût pour toi.</span></div></div>
+<script>
+const AFFILIATE={
+  wall:"",   // Colle ici ton lien affilié vers un chargeur secteur
+  cable:"",  // Colle ici ton lien affilié vers un câble
+  car:""     // Colle ici ton lien affilié vers un chargeur voiture
+};
+function setAffiliateLink(id,url){
+  const el=document.getElementById(id);
+  if(!el) return;
+  if(url && /^https?:\/\//i.test(url)){
+    el.href=url;
+    el.target="_blank";
+    el.rel="sponsored noopener";
+    el.style.display="";
+  }else{
+    el.style.display="none";
+  }
+}
+function mk(brand,model,w,port,proto,wireless,o={}){return{brand,model,w,port,proto,wireless,cable:o.cable||(port.includes("Lightning")?"USB‑C → Lightning":"USB‑C → USB‑C"),cableW:o.cableW||(w>100?240:w>60?100:60),data:o.data||"USB 2.0 suffit pour la charge",video:o.video||false,wall:o.wall||Math.max(20,w),car:o.car||Math.max(30,Math.min(100,w)),family:o.family||"Smartphone",note:o.note||"",wirelessStd:o.wirelessStd||wireless,source:o.source||"",proprietary:o.proprietary||false,wallPorts:o.wallPorts||"1× USB‑C minimum"}}
+let D=[];
+[
+  ["iPhone 17",40,false],
+  ["iPhone 17 Pro",40,true],
+  ["iPhone 17 Pro Max",40,true]
+].forEach(([m,w,pro])=>D.push(mk("Apple",m,w,"USB‑C","USB Power Delivery","MagSafe / Qi2",{wall:40,car:45,cableW:60,data:pro?"USB 3 / vidéo selon modèle et câble adapté":"USB 2.0 / DisplayPort selon modèle",video:true,source:pro?"https://support.apple.com/fr-fr/125090":"https://www.apple.com/fr/iphone-17/specs/",note:"Apple indique jusqu’à 50 % de charge en environ 20 minutes avec un adaptateur 40 W ou plus. La puissance de l’adaptateur n’est pas la puissance constamment absorbée par l’iPhone."})));
+
+[
+  ["iPhone 18 Pro",60],
+  ["iPhone 18 Pro Max",60]
+].forEach(([m,w])=>D.push(mk("Apple",m,w,"USB‑C","USB Power Delivery","MagSafe / Qi2 jusqu’à 25 W",{wall:60,car:65,cableW:100,data:"USB 3 jusqu’à 10 Gbit/s avec câble adapté",video:true,source:"https://www.apple.com/fr/iphone-18-pro/specs/",note:"Apple indique jusqu’à 50 % de charge en environ 15 minutes avec un adaptateur 60 W ou plus. MagSafe et Qi2 peuvent atteindre 25 W avec les accessoires compatibles."})));
+
+["iPhone 15","iPhone 15 Plus","iPhone 15 Pro","iPhone 15 Pro Max","iPhone 16e","iPhone 16","iPhone 16 Plus","iPhone 16 Pro","iPhone 16 Pro Max"].forEach(m=>D.push(mk("Apple",m,30,"USB‑C","USB Power Delivery","MagSafe / Qi2",{wall:30,car:30,data:m.includes("Pro")?"USB 3 sur modèles Pro avec câble adapté":"USB 2.0",video:m.includes("15")||m.includes("16"),source:"https://support.apple.com/fr-fr/120619",note:"Pour la charge rapide, Apple recommande un chargeur USB‑C Power Delivery. Un chargeur plus puissant reste compatible : l’iPhone ne prend que la puissance dont il a besoin."})));
+["iPhone 14","iPhone 14 Plus","iPhone 14 Pro","iPhone 14 Pro Max","iPhone 13","iPhone 13 mini","iPhone 13 Pro","iPhone 13 Pro Max","iPhone 12","iPhone 12 mini","iPhone 12 Pro","iPhone 12 Pro Max","iPhone 11","iPhone 11 Pro","iPhone 11 Pro Max"].forEach(m=>D.push(mk("Apple",m,20,"Lightning","USB Power Delivery","MagSafe / Qi",{cable:"USB‑C → Lightning",wall:20,car:30,source:"https://support.apple.com/fr-fr/120619",note:"Pour les iPhone 14 et antérieurs, utilise un câble USB‑C vers Lightning pour profiter de la charge rapide avec un chargeur USB‑C PD."})));
+["iPad (10e génération)","iPad Air M2 11″","iPad Air M2 13″","iPad Pro M4 11″","iPad Pro M4 13″","iPad mini (USB‑C)"].forEach(m=>D.push(mk("Apple",m,30,"USB‑C","USB Power Delivery","Non / selon accessoire",{family:"Tablette",wall:30,car:45,data:"USB‑C : données selon modèle",video:true,note:"Pour un iPad, un chargeur USB‑C PD de 30 W est un choix polyvalent. Pour usage simultané ou accessoires, 45 W apporte plus de marge."})));
+[["MacBook Air 13″ M2/M3/M4",67],["MacBook Air 15″ M2/M3/M4",70],["MacBook Pro 14″",96],["MacBook Pro 16″",140]].forEach(([m,w])=>D.push(mk("Apple",m,w,"USB‑C / MagSafe 3","USB Power Delivery","Non",{family:"Ordinateur",wall:w,car:Math.min(100,w),cableW:w>100?240:100,data:"USB‑C avec données/vidéo selon port",video:true,note:"Pour ordinateur, vérifie que le chargeur voiture peut réellement fournir la puissance annoncée sur un seul port USB‑C."})));
+[["Galaxy S25",25],["Galaxy S25 Edge",25],["Galaxy S25+",45],["Galaxy S25 Ultra",45],["Galaxy S24",25],["Galaxy S24+",45],["Galaxy S24 Ultra",45],["Galaxy S23",25],["Galaxy S23+",45],["Galaxy S23 Ultra",45],["Galaxy S22",25],["Galaxy S22+",45],["Galaxy S22 Ultra",45],["Galaxy Z Fold6",25],["Galaxy Z Flip6",25],["Galaxy Z Fold5",25],["Galaxy Z Flip5",25],["Galaxy A56",45],["Galaxy A55",25],["Galaxy A36",45],["Galaxy A35",25]].forEach(([m,w])=>D.push(mk("Samsung",m,w,"USB‑C",w===45?"USB PD + PPS / Super Fast Charging 2.0":"USB PD + PPS / Super Fast Charging","Qi / sans fil selon modèle",{wall:w,car:Math.max(30,w),cableW:w===45?100:60,note:w===45?"Pour atteindre 45 W chez Samsung, utilise un chargeur PD/PPS compatible et un câble 5 A.":"Un chargeur USB‑C PD/PPS est le choix le plus sûr pour la charge rapide Galaxy.",source:"https://www.samsung.com/fr/support/mobile-devices/which-type-of-charger-does-my-galaxy-device-accept/"})));
+["Galaxy Tab S10+","Galaxy Tab S10 Ultra","Galaxy Tab S9","Galaxy Tab S9+","Galaxy Tab S9 Ultra"].forEach(m=>D.push(mk("Samsung",m,45,"USB‑C","USB PD + PPS","Non / accessoire",{family:"Tablette",wall:45,car:45,cableW:100,note:"Pour 45 W, privilégie un câble USB‑C 5 A et un chargeur PPS compatible."})));
+[["Pixel 10",30],["Pixel 10 Pro",30],["Pixel 10 Pro XL",45],["Pixel 10 Pro Fold",30],["Pixel 9",27],["Pixel 9 Pro",27],["Pixel 9 Pro XL",37],["Pixel 9 Pro Fold",21],["Pixel 8",27],["Pixel 8 Pro",30],["Pixel 8a",18],["Pixel 7",20],["Pixel 7 Pro",23],["Pixel 7a",18]].forEach(([m,w])=>D.push(mk("Google",m,w,"USB‑C","USB Power Delivery + PPS","Qi / Qi2 selon modèle",{wall:w>=37?45:30,car:w>=37?45:30,cableW:60,source:"https://support.google.com/pixelphone/answer/7106961?hl=fr",note:"Google recommande un chargeur USB‑C PD/PPS. Un chargeur plus puissant est compatible, le téléphone limite lui-même la puissance."})));
+[["Xiaomi 15",90],["Xiaomi 15 Ultra",90],["Xiaomi 14",90],["Xiaomi 14 Ultra",90],["Xiaomi 13",67],["Xiaomi 13 Pro",120],["Redmi Note 14 Pro+ 5G",120],["Redmi Note 14 Pro 5G",45],["Redmi Note 13 Pro+ 5G",120],["Redmi Note 13 Pro 5G",67],["POCO F7 Ultra",120],["POCO F7 Pro",90],["POCO X7 Pro",90]].forEach(([m,w])=>D.push(mk(m.startsWith("Redmi")?"Redmi":m.startsWith("POCO")?"POCO":"Xiaomi",m,w,"USB‑C",w>45?"Xiaomi HyperCharge / charge propriétaire + PD selon modèle":"USB‑C rapide / PD selon modèle",m.startsWith("Xiaomi")?"Sans fil selon modèle":"Généralement non",{wall:w,car:w>=90?100:65,cableW:w>60?100:60,proprietary:w>45,note:w>45?"Pour atteindre la puissance maximale annoncée, les modèles Xiaomi/Redmi/POCO très rapides peuvent nécessiter le chargeur et le câble propriétaires de la marque. Avec un chargeur USB‑PD classique, la puissance peut être plus basse.":"Vérifie le protocole exact du modèle.",source:m==="Xiaomi 15"?"https://www.mi.com/fr/product/xiaomi-15/specs/":""})));
+[["OnePlus 13",100],["OnePlus 13R",80],["OnePlus 12",100],["OnePlus 12R",100],["OnePlus Nord 4",100],["OnePlus Nord CE4 Lite",80]].forEach(([m,w])=>D.push(mk("OnePlus",m,w,"USB‑C","SUPERVOOC + USB‑PD selon modèle","Sans fil selon modèle",{wall:w,car:100,cableW:100,proprietary:true,note:"La vitesse maximale SUPERVOOC nécessite généralement le chargeur/câble OnePlus compatibles. Un chargeur USB‑PD tiers peut charger moins vite."})));
+[["HONOR Magic7 Pro",100],["HONOR Magic6 Pro",80],["HONOR 400 Pro",100],["HONOR 400",66],["HONOR 200 Pro",100],["HONOR 200",100]].forEach(([m,w])=>D.push(mk("HONOR",m,w,"USB‑C","HONOR SuperCharge + USB‑PD selon modèle","Sans fil selon modèle",{wall:w,car:100,cableW:100,proprietary:true,note:"Pour atteindre la puissance SuperCharge maximale, le chargeur et le câble HONOR compatibles sont généralement nécessaires."})));
+[["Phone (3)",65],["Phone (2)",45],["Phone (2a)",45],["Phone (2a) Plus",50],["CMF Phone 1",33],["CMF Phone 2 Pro",33]].forEach(([m,w])=>D.push(mk(m.startsWith("CMF")?"CMF":"Nothing",m,w,"USB‑C","USB Power Delivery / PPS selon modèle","Qi selon modèle",{wall:w>45?65:45,car:w>45?65:45,cableW:w>60?100:60,note:"Un chargeur USB‑C PD/PPS de puissance égale ou supérieure à la puissance utile est le choix le plus polyvalent."})));
+[["Edge 60 Pro",90],["Edge 60",68],["Edge 50 Ultra",125],["Edge 50 Pro",125],["Razr 60 Ultra",68],["Razr 60",30],["Moto G86 5G",30],["Moto G85 5G",30]].forEach(([m,w])=>D.push(mk("Motorola",m,w,"USB‑C","TurboPower / USB‑PD selon modèle","Sans fil selon modèle",{wall:w>65?Math.min(w,125):Math.max(30,w),car:w>65?100:Math.max(30,w),cableW:w>60?100:60,proprietary:w>68,note:w>68?"La puissance maximale TurboPower peut nécessiter un chargeur Motorola compatible.":"Un chargeur USB‑C PD de bonne qualité reste un choix polyvalent."})));
+[["OPPO Find X8 Pro",80],["OPPO Find X8",80],["OPPO Reno13 Pro",80],["OPPO Reno13",80]].forEach(([m,w])=>D.push(mk("OPPO",m,w,"USB‑C","SUPERVOOC + USB‑PD selon modèle","Sans fil selon modèle",{wall:w,car:100,cableW:100,proprietary:true,note:"Pour atteindre la vitesse SUPERVOOC maximale, utilise un ensemble chargeur + câble compatible OPPO."})));
+[["realme GT 7 Pro",120],["realme GT 7",120],["realme 14 Pro+",80],["realme 14 Pro",45]].forEach(([m,w])=>D.push(mk("realme",m,w,"USB‑C","SUPERVOOC / charge propriétaire + PD selon modèle","Selon modèle",{wall:w,car:100,cableW:100,proprietary:w>45,note:"La charge très rapide realme peut nécessiter le chargeur et le câble propriétaires."})));
+[["HUAWEI Pura 70 Ultra",100],["HUAWEI Pura 70 Pro",100],["HUAWEI Pura 70",66],["HUAWEI Mate X6",66]].forEach(([m,w])=>D.push(mk("Huawei",m,w,"USB‑C","HUAWEI SuperCharge + USB‑PD selon modèle","Sans fil selon modèle",{wall:w,car:100,cableW:100,proprietary:true,note:"La vitesse SuperCharge maximale peut nécessiter un chargeur/câble Huawei compatible."})));
+if(Object.values(AFFILIATE).some(Boolean)){document.getElementById("affiliateDisclosure").style.display="inline";}D.sort((a,b)=>a.brand.localeCompare(b.brand)||a.model.localeCompare(b.model));const brands=["Tous",...new Set(D.map(x=>x.brand))];const q=document.getElementById("q"),list=document.getElementById("resultsList"),out=document.getElementById("output"),filters=document.getElementById("filters");let activeBrand="Tous",current=null;document.getElementById("count").textContent=D.length;brands.forEach(b=>{const el=document.createElement("button");el.className="filter"+(b==="Tous"?" active":"");el.textContent=b;el.onclick=()=>{activeBrand=b;[...filters.children].forEach(x=>x.classList.remove("active"));el.classList.add("active");renderList(q.value)};filters.appendChild(el)});function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}function renderList(v){const n=norm(v.trim()),arr=D.filter(d=>(activeBrand==="Tous"||d.brand===activeBrand)&&(!n||norm(d.brand+" "+d.model).includes(n))).slice(0,20);list.innerHTML="";arr.forEach(d=>{const el=document.createElement("div");el.className="resultItem";el.innerHTML=`<b>${d.model}</b><div class="meta">${d.brand} • ${d.family} • ${d.w} W max/utile indiqué</div>`;el.onclick=()=>selectDevice(d);list.appendChild(el)});list.style.display=arr.length?"block":"none"}q.addEventListener("input",()=>renderList(q.value));q.addEventListener("focus",()=>renderList(q.value));document.addEventListener("click",e=>{if(!e.target.closest(".finder"))list.style.display="none"});function selectDevice(d){current=d;q.value=d.model;list.style.display="none";out.classList.remove("hidden");dName.textContent=d.model;dBrand.textContent=d.brand;dFamily.textContent=d.family;wired.textContent=d.w+" W";port.textContent=d.port;proto.textContent=d.proto;wireless.textContent=d.wireless;mainNote.textContent=d.note||"Le chargeur peut être plus puissant que l’appareil : l’appareil négocie la puissance qu’il accepte.";wall.textContent=d.wall+" W USB‑C";wallWhy.textContent=d.proprietary?`Pour la vitesse maximale, vérifie le protocole propriétaire ${d.brand}. Pour un usage universel, un chargeur USB‑C PD/PPS reste pratique.`:`Puissance suffisante pour exploiter correctement la charge rapide de cet appareil sans surdimensionner inutilement.`;wallProto.textContent=d.proto;wallPorts.textContent=d.wallPorts;cable.textContent=d.cable;cableWhy.textContent=d.cableW>=100?"Prends un câble certifié pour la puissance et, si nécessaire, un câble 5 A/e‑marker.":"Un bon câble 60 W suffit pour cet usage de charge.";cablePower.textContent=d.cableW+" W minimum conseillé";cableData.textContent=d.data;car.textContent=d.car+" W";carWhy.textContent=`Choisis un chargeur allume‑cigare USB‑C capable de fournir au moins ${d.car} W sur un seul port si tu veux conserver une charge rapide.`;carProto.textContent=d.proprietary?"PD/PPS + protocole marque si disponible":d.proto;carPorts.textContent="USB‑C PD • 12/24 V";wirelessRec.textContent=d.wireless==="Non"?"Pas prioritaire":d.wireless;wirelessWhy.textContent=d.wireless==="Non"?"Ce modèle n’est pas ciblé ici pour la recharge sans fil.":"Pour de bonnes performances, utilise un socle ou chargeur certifié compatible avec le standard indiqué.";wirelessStd.textContent=d.wirelessStd;const extra=d.video?" Il peut aussi être pertinent de choisir un câble compatible données/vidéo si tu relies l’appareil à un écran.":"";verdict.innerHTML=`Pour <b>${d.model}</b>, vise un chargeur secteur <b>${d.wall} W</b>, un câble <b>${d.cable}</b> capable d’au moins <b>${d.cableW} W</b>, et en voiture un modèle USB‑C d’environ <b>${d.car} W</b>. ${d.proprietary?`Attention : la vitesse maximale annoncée par ${d.brand} peut demander le chargeur/câble propriétaire.`:"Un chargeur plus puissant reste généralement compatible : l’appareil ne prend que ce qu’il négocie."}${extra}`;setAffiliateLink("wallLink",AFFILIATE.wall);setAffiliateLink("cableLink",AFFILIATE.cable);setAffiliateLink("carLink",AFFILIATE.car);sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;out.scrollIntoView({behavior:"smooth",block:"start"})}randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);copyBtn.onclick=async()=>{if(!current)return;const t=`Nova Astuces — ${current.model}\nChargeur secteur : ${current.wall} W\nCâble : ${current.cable}, ${current.cableW} W minimum\nVoiture : ${current.car} W USB-C\nProtocole : ${current.proto}\nSans fil : ${current.wireless}`;try{await navigator.clipboard.writeText(t);copyBtn.textContent="Copié ✓";setTimeout(()=>copyBtn.textContent="Copier la recommandation",1500)}catch(e){}};
+
+// ---------------- MULTI-APPAREILS ----------------
+const mq=document.getElementById("mq"),
+      mlist=document.getElementById("mresultsList"),
+      selectedBox=document.getElementById("selectedDevices"),
+      multiResult=document.getElementById("multiResult");
+let selectedMulti=[];
+
+function renderMultiList(v){
+  const n=norm(v.trim());
+  const arr=D.filter(d=>!selectedMulti.includes(d) && (!n || norm(d.brand+" "+d.model).includes(n))).slice(0,20);
+  mlist.innerHTML="";
+  arr.forEach(d=>{
+    const el=document.createElement("div");
+    el.className="resultItem";
+    el.innerHTML=`<b>${d.model}</b><div class="meta">${d.brand} • ${d.w} W • ${d.port}</div>`;
+    el.onclick=()=>addMulti(d);
+    mlist.appendChild(el);
+  });
+  mlist.style.display=arr.length?"block":"none";
+}
+
+function addMulti(d){
+  if(selectedMulti.length>=5){
+    alert("Maximum 5 appareils dans cette version.");
+    return;
+  }
+  if(!selectedMulti.includes(d)) selectedMulti.push(d);
+  mq.value="";
+  mlist.style.display="none";
+  renderSelectedMulti();
+}
+
+function renderSelectedMulti(){
+  selectedBox.innerHTML="";
+  selectedMulti.forEach((d,i)=>{
+    const chip=document.createElement("span");
+    chip.className="selectedChip";
+    chip.innerHTML=`${d.model} <button title="Retirer">×</button>`;
+    chip.querySelector("button").onclick=()=>{
+      selectedMulti.splice(i,1);
+      renderSelectedMulti();
+      multiResult.classList.add("hidden");
+    };
+    selectedBox.appendChild(chip);
+  });
+}
+
+mq.addEventListener("input",()=>renderMultiList(mq.value));
+mq.addEventListener("focus",()=>renderMultiList(mq.value));
+
+document.getElementById("addExampleBtn").onclick=()=>{
+  const pool=D.filter(d=>!selectedMulti.includes(d));
+  if(pool.length) addMulti(pool[Math.floor(Math.random()*pool.length)]);
+};
+document.getElementById("clearMultiBtn").onclick=()=>{
+  selectedMulti=[];
+  renderSelectedMulti();
+  multiResult.classList.add("hidden");
+};
+
+function roundCharger(w){
+  const common=[30,45,65,67,100,120,140,160,200,240,300];
+  return common.find(x=>x>=w) || Math.ceil(w/50)*50;
+}
+
+document.getElementById("calcMultiBtn").onclick=()=>{
+  if(selectedMulti.length<2){
+    alert("Ajoute au moins 2 appareils.");
+    return;
+  }
+
+  // Practical simultaneous-power target:
+  // Sum the useful wired powers, but cap phone-class demand conservatively where proprietary protocols
+  // may not be reproduced by a universal GaN charger.
+  const simultaneous = selectedMulti.reduce((sum,d)=>{
+    const practical = d.family==="Smartphone" ? Math.min(d.w,100) : d.w;
+    return sum + practical;
+  },0);
+
+  const wallTarget=roundCharger(simultaneous);
+  const ports=selectedMulti.length;
+
+  // Car chargers usually have less thermal/power headroom; recommend a realistic ceiling.
+  const carDemand=selectedMulti.reduce((sum,d)=>sum+Math.min(d.car,100),0);
+  const carTarget=roundCharger(Math.min(carDemand,240));
+
+  const proprietary=selectedMulti.filter(d=>d.proprietary);
+  const protocols=[...new Set(selectedMulti.map(d=>d.proto))];
+
+  document.getElementById("multiWall").textContent=`${wallTarget} W environ`;
+  document.getElementById("multiWallWhy").textContent=
+    `Pour charger ${selectedMulti.length} appareils en même temps, vise un chargeur GaN multiport avec une puissance totale d’environ ${wallTarget} W et vérifie surtout la puissance disponible sur chaque port.`;
+  document.getElementById("multiPorts").textContent=`${ports} ports utiles`;
+  document.getElementById("multiProtocols").textContent=proprietary.length
+    ? "PD/PPS + protocoles propriétaires à vérifier"
+    : "USB‑PD / PPS selon appareils";
+
+  document.getElementById("multiCar").textContent=`${carTarget} W max conseillé`;
+  document.getElementById("multiCarWhy").textContent=
+    carDemand>240
+      ? `La somme théorique dépasse ce qu’un chargeur voiture courant peut fournir confortablement. En voiture, privilégie les appareils prioritaires et vérifie la puissance par port.`
+      : `Choisis un modèle 12/24 V multiport capable de distribuer environ ${carTarget} W au total, sans oublier la limite par port.`;
+  document.getElementById("multiCarPorts").textContent=`${Math.min(ports,4)} ports pratiques`;
+
+  const grouped={};
+  selectedMulti.forEach(d=>{
+    const key=`${d.cable} — ${d.cableW} W min.`;
+    grouped[key]=(grouped[key]||0)+1;
+  });
+  document.getElementById("multiCables").innerHTML=Object.entries(grouped)
+    .map(([k,n])=>`<div style="padding:7px 0;border-bottom:1px solid #1f354f"><b>${n}×</b> ${k}</div>`).join("");
+
+  let verdict=`Pour <b>${selectedMulti.map(d=>d.model).join(" + ")}</b>, cherche en priorité un chargeur GaN <b>${wallTarget} W</b> avec au moins <b>${ports} ports</b>. `;
+  if(proprietary.length){
+    verdict+=`Attention : ${proprietary.map(d=>d.model).join(", ")} ${proprietary.length>1?"utilisent":"utilise"} un protocole propriétaire pour atteindre la vitesse maximale. Un chargeur universel USB‑PD peut donc charger moins vite que le chargeur d’origine. `;
+  }
+  verdict+=`Le point le plus important est la <b>répartition de puissance par port</b> : un chargeur annoncé à ${wallTarget} W ne donne pas forcément cette puissance sur chaque sortie en même temps.`;
+
+  document.getElementById("multiVerdict").innerHTML=verdict;
+  multiResult.classList.remove("hidden");
+  multiResult.scrollIntoView({behavior:"smooth",block:"start"});
+};
+
+</script></body></html>
