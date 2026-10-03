@@ -47,6 +47,8 @@ linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height
           <div class="line"></div>
           <span class="pill" id="multiPorts"></span>
           <span class="pill" id="multiProtocols"></span>
+<div class="aff"><a id="multiWallLink" href="#"><button class="btn secondary">Comparer un chargeur multiport sur BSENOVA</button></a></div>
+<div class="footnote" id="multiProductNote" style="margin-top:10px"></div>
         </div>
 
         <div class="card rec">
@@ -174,6 +176,7 @@ function addMulti(d){
   mq.value="";
   mlist.style.display="none";
   renderSelectedMulti();
+multiResult.classList.add("hidden");
 }
 
 function renderSelectedMulti(){
@@ -263,6 +266,15 @@ document.getElementById("calcMultiBtn").onclick=()=>{
   verdict+=`Le point le plus important est la <b>répartition de puissance par port</b> : un chargeur annoncé à ${wallTarget} W ne donne pas forcément cette puissance sur chaque sortie en même temps.`;
 
   document.getElementById("multiVerdict").innerHTML=verdict;
+  // Compare a catalog candidate only when total power and USB-C port count fit.
+  // Per-port distribution and protocols still need verification on the product sheet.
+  const candidate=wallTarget<=100 && ports<=2 ? {url:PRODUCTS.wall100,label:"Comparer le UGREEN Nexode Pro 100W sur BSENOVA"}
+    : wallTarget<=160 && ports<=3 ? {url:PRODUCTS.wall160,label:"Comparer le UGREEN Nexode Pro 160W sur BSENOVA"} : null;
+  setAffiliateLink("multiWallLink",candidate?candidate.url:"",candidate?candidate.label:"");
+  document.getElementById("multiProductNote").textContent=candidate
+    ? "Avant de choisir : vérifie la répartition de puissance entre les ports utilisés et la compatibilité PD/PPS de chaque appareil. Le total annoncé ne garantit pas la vitesse maximale simultanée."
+    : "Aucun modèle du catalogue n’est proposé ici pour cette combinaison de puissance et de ports USB-C. Il peut être nécessaire de répartir les appareils entre plusieurs chargeurs.";
+
   multiResult.classList.remove("hidden");
   multiResult.scrollIntoView({behavior:"smooth",block:"start"});
 };
