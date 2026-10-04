@@ -59,6 +59,8 @@ linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height
           <div class="line"></div>
           <span class="pill">USB‑C PD recommandé</span>
           <span class="pill" id="multiCarPorts"></span>
+<div class="aff"><a id="multiCarLink" href="#"><button class="btn secondary">Comparer un chargeur voiture sur BSENOVA</button></a></div>
+<div class="footnote" id="multiCarProductNote" style="margin-top:10px"></div>
         </div>
       </div>
 
@@ -91,6 +93,8 @@ const PRODUCTS={
   cable60:"https://bsenova.com/products/ugreen-cable-usb-c-60w-2-m-nylon-tresse",
   cable100:"https://bsenova.com/products/ugreen-cable-usb-c-100w-2-m-nylon-tresse",
   cableUsbC:"https://bsenova.com/products/ugreen-cable-usb-c-240w-10gbps-4k-2m",
+  car30:"https://bsenova.com/products/ugreen-chargeur-voiture-usb-c-30-w-3-ports-avec-led",
+  car63:"https://bsenova.com/products/ugreen-chargeur-voiture-63-w-usb-c-pps-45-w-usb-a",
   car:"https://bsenova.com/products/ugreen-chargeur-voiture-130w",
   wireless:"https://bsenova.com/products/ugreen-magflow-pro-2-en-1-qi2-25w"
 };
@@ -109,6 +113,23 @@ function setAffiliateLink(id,url,label){
     el.style.display="none";
   }
 }
+
+function chooseCarCharger(d){
+  const pps=/PPS/i.test(d.proto);
+  if(d.car<=30) return {url:PRODUCTS.car30,label:"Voir le chargeur voiture UGREEN 30 W",note:"UGREEN 30 W : jusqu’à 30 W sur un port USB-C utilisé seul. La puissance est partagée lorsque plusieurs ports sont utilisés."};
+  if(d.car<=45 && pps) return {url:PRODUCTS.car63,label:"Voir le chargeur voiture UGREEN 63 W",note:"UGREEN 63 W : jusqu’à 45 W en USB-C PPS et 18 W en USB-A. Avec deux appareils : USB-C PPS 45 W ou USB PD 30 W. Pour Samsung 45 W, utilise un câble USB-C 5 A ; pour les autres appareils, vérifie la plage PPS nécessaire."};
+  if(d.car<=100) return {url:PRODUCTS.car,label:"Voir le chargeur voiture UGREEN 130 W",note:"UGREEN 130 W : jusqu’à 100 W sur USB-C2 et 30 W sur USB-C1. Le total de 130 W n’est pas la puissance d’un seul port. Le PPS du port principal est limité à 45 W."};
+  return null;
+}
+function chooseMultiCarCharger(devices){
+  if(devices.length!==2 || devices.some(d=>d.proprietary)) return null;
+  const fitsMain=d=>d.car<=100 && (!/PPS/i.test(d.proto)||d.car<=45);
+  const fitsSecondary=d=>d.car<=30;
+  if((fitsMain(devices[0])&&fitsSecondary(devices[1])) || (fitsMain(devices[1])&&fitsSecondary(devices[0])))
+    return {url:PRODUCTS.car,label:"Comparer le chargeur voiture UGREEN 130 W"};
+  return null;
+}
+
 function mk(brand,model,w,port,proto,wireless,o={}){return{brand,model,w,port,proto,wireless,cable:o.cable||(port.includes("Lightning")?"USB‑C → Lightning":"USB‑C → USB‑C"),cableW:o.cableW||(w>100?240:w>60?100:60),data:o.data||"USB 2.0 suffit pour la charge",video:o.video||false,wall:o.wall||Math.max(20,w),car:o.car||Math.max(30,Math.min(100,w)),family:o.family||"Smartphone",note:o.note||"",wirelessStd:o.wirelessStd||wireless,source:o.source||"",proprietary:o.proprietary||false,wallPorts:o.wallPorts||"1× USB‑C minimum"}}
 let D=[];
 [
@@ -142,11 +163,15 @@ const wallLabel=d.wall<=30?"Voir le chargeur UGREEN Nexode 30W":(d.wall<=45?"Voi
 const isUsbCCable=d.cable.replaceAll("‑","-").includes("USB-C") && !d.cable.includes("Lightning");
 const cableProduct=isUsbCCable?(d.cableW<=60?PRODUCTS.cable60:(d.cableW<=100?PRODUCTS.cable100:(d.cableW<=240?PRODUCTS.cableUsbC:""))):"";
 const cableLabel=isUsbCCable?(d.cableW<=60?"Voir le câble UGREEN USB-C 60W":(d.cableW<=100?"Voir le câble UGREEN USB-C 100W":"Voir le câble UGREEN USB-C 240W")):"Voir un câble compatible";
-const carProduct=d.car<=130?PRODUCTS.car:"";
+const carChoice=chooseCarCharger(d);
+const carProduct=carChoice?carChoice.url:"";
+if(carChoice) carWhy.textContent+= " "+carChoice.note;
+if(d.proprietary) carWhy.textContent+=" La vitesse maximale propriétaire de la marque n’est pas garantie par ce chargeur universel.";
+carPorts.textContent=carChoice && carChoice.url===PRODUCTS.car63?"1× USB-C + 1× USB-A":carChoice && carChoice.url===PRODUCTS.car30?"2× USB-C + 1× USB-A":"2× USB-C + 1× USB-A";
 const wirelessProduct=(d.wireless!=="Non" && /Qi|MagSafe/i.test(d.wireless+" "+d.wirelessStd))?PRODUCTS.wireless:"";
 setAffiliateLink("wallLink",wallProduct,wallLabel);
 setAffiliateLink("cableLink",cableProduct,cableLabel);
-setAffiliateLink("carLink",carProduct,"Voir le chargeur voiture UGREEN 130W");
+setAffiliateLink("carLink",carProduct,carChoice?carChoice.label:"");
 setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;out.scrollIntoView({behavior:"smooth",block:"start"})}randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);// ---------------- MULTI-APPAREILS ----------------
 const mq=document.getElementById("mq"),
       mlist=document.getElementById("mresultsList"),
@@ -251,6 +276,12 @@ document.getElementById("calcMultiBtn").onclick=()=>{
       ? `La somme théorique dépasse ce qu’un chargeur voiture courant peut fournir confortablement. En voiture, privilégie les appareils prioritaires et vérifie la puissance par port.`
       : `Choisis un modèle 12/24 V multiport capable de distribuer environ ${carTarget} W au total, sans oublier la limite par port.`;
   document.getElementById("multiCarPorts").textContent=`${Math.min(ports,4)} ports pratiques`;
+
+  const carCandidate=chooseMultiCarCharger(selectedMulti);
+  setAffiliateLink("multiCarLink",carCandidate?carCandidate.url:"",carCandidate?carCandidate.label:"");
+  document.getElementById("multiCarProductNote").textContent=carCandidate
+    ? "Deux appareils en USB-C : place celui qui demande le plus de puissance sur USB-C2 (100 W en PD, jusqu’à 45 W en PPS), et l’autre sur USB-C1 (30 W maximum). Vérifie les protocoles et les câbles ; le total de 130 W ne garantit pas la vitesse maximale de chaque appareil."
+    : "Aucun modèle n’est recommandé automatiquement pour cette combinaison : vérifie la puissance et le protocole de chaque port. Trois prises ne signifient pas trois ports USB-C rapides.";
 
   const grouped={};
   selectedMulti.forEach(d=>{
