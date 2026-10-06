@@ -85,6 +85,13 @@ linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height
 <div class="footer">Nova Charge • Nova Astuces • Guide indicatif : la puissance réellement absorbée dépend de l’appareil, de la température, du niveau de batterie, du câble et du protocole du chargeur.<br><span id="affiliateDisclosure" style="display:none">Certains liens peuvent être affiliés : Nova Astuces peut percevoir une commission sans surcoût pour toi.</span></div></div>
 <script>
 const PRODUCTS={
+  anker30:"https://bsenova.com/products/anker-511-nano-3-30w-a2147-chargeur-gan-usb-c",
+  anker45:"https://bsenova.com/products/anker-nano-45w-a2692-chargeur-gan-usb-c-avec-cable",
+  anker65:"https://bsenova.com/products/anker-735-nano-ii-65w-a2667-chargeur-gan-3-ports",
+  anker100:"https://bsenova.com/products/anker-prime-100w-a2688-chargeur-gan-3-ports",
+  anker160:"https://bsenova.com/products/anker-prime-160w-a2687-chargeur-gan-3-ports-avec-ecran",
+  ankerWireless:"https://bsenova.com/products/anker-prime-qi2-25w-a25x7-station-de-charge-sans-fil-3-en-1",
+  ankerCable:"https://bsenova.com/products/anker-prime-cable-usb-c-vers-usb-c-240w-1-8-m",
   wall30:"https://bsenova.com/products/ugreen-nexode-30w-chargeur-gan-usb-c",
   wall45:"https://bsenova.com/products/ugreen-nexode-mini-45w-pps-chargeur-gan-usb-c",
   wall65:"https://bsenova.com/products/chargeur-ugreen-65w",
@@ -130,6 +137,60 @@ function chooseMultiCarCharger(devices){
   return null;
 }
 
+
+function chooseAnkerWall(d){
+  if(d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto)) return null;
+  const watts=[30,45,65,100,160].find(w=>w>=d.wall && (w!==160 || d.wall<=140));
+  return watts ? {url:PRODUCTS["anker"+watts],label:"Voir le chargeur Anker "+watts+" W"} : null;
+}
+function chooseAnkerCable(d){
+  const usbC=!d.cable.includes("Lightning") && /USB.C.*USB.C/.test(d.cable);
+  return usbC && !d.proprietary && d.cableW<=240
+    ? {url:PRODUCTS.ankerCable,label:"Voir le câble Anker Prime USB-C 240 W"} : null;
+}
+function chooseAnkerWireless(d){
+  return d.brand==="Apple" && /^iPhone /.test(d.model) && !/iPhone (11|16e)( |$)/.test(d.model)
+    && /Qi|MagSafe/i.test(d.wireless+" "+d.wirelessStd);
+}
+function chooseAnkerMulti(devices,target){
+  if(devices.some(d=>d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto))) return null;
+  // These are comparison candidates; simultaneous output allocation must be checked.
+  if(target<=65 && devices.length<=2 && devices.every(d=>d.wall<=65))
+    return {url:PRODUCTS.anker65,label:"Comparer le Anker 735 65 W"};
+  if(target<=100 && devices.length<=2 && devices.every(d=>d.wall<=100))
+    return {url:PRODUCTS.anker100,label:"Comparer le Anker Prime 100 W"};
+  if(target<=160 && devices.length<=3 && devices.every(d=>d.wall<=140))
+    return {url:PRODUCTS.anker160,label:"Comparer le Anker Prime 160 W"};
+  return null;
+}
+function showAnkerAlternative(baseId,choice,note){
+  const base=document.getElementById(baseId);
+  if(!base) return;
+  let box=document.getElementById(baseId+"Anker");
+  if(!box){
+    box=document.createElement("div");box.id=baseId+"Anker";box.style.width="100%";
+    const link=document.createElement("a");link.id=baseId+"AnkerLink";
+    const button=document.createElement("button");button.className="btn secondary";link.appendChild(button);
+    const detail=document.createElement("div");detail.className="footnote";detail.style.marginTop="8px";
+    box.appendChild(link);box.appendChild(detail);base.parentElement.appendChild(box);
+  }
+  box.classList.toggle("hidden",!choice);
+  setAffiliateLink(baseId+"AnkerLink",choice?choice.url:"",choice?choice.label:"");
+  box.querySelector(".footnote").textContent=choice?note:"";
+}
+function showAnkerSingle(d){
+  const wallChoice=chooseAnkerWall(d);
+  showAnkerAlternative("wallLink",wallChoice,
+    (wallChoice && wallChoice.url===PRODUCTS.anker160 ? "160 W au total, jusqu’à 140 W sur un port USB-C. " : "")
+    +"Vérifie la compatibilité PD/PPS du modèle et la puissance disponible par port. Les ports partagent la puissance si plusieurs appareils sont branchés."
+    +(d.model.includes("Galaxy") && d.wall===45 ? " Pour Samsung 45 W, un câble USB-C 5 A est nécessaire." : ""));
+  showAnkerAlternative("cableLink",chooseAnkerCable(d),
+    "Alternative pour la charge : jusqu’à 240 W avec appareils et chargeur compatibles. Pour le transfert rapide ou un écran, conserve un câble explicitement compatible données/vidéo ; 240 W ne garantit pas ces fonctions."
+    +(d.brand==="Samsung" && d.wall===45 ? " Vérifie la certification 5 A/e-marker pour la charge 45 W." : ""));
+  showAnkerAlternative("wirelessLink",chooseAnkerWireless(d)?{url:PRODUCTS.ankerWireless,label:"Voir Anker Prime Qi2 25 W 3-en-1"}:null,
+    "Station pour iPhone compatible, Apple Watch et écouteurs compatibles. Jusqu’à 25 W sur un téléphone Qi2 25 W compatible ; les autres modèles restent limités par leur standard. Vérifie le modèle d’iPhone, la coque et les versions logicielles requises.");
+}
+
 function mk(brand,model,w,port,proto,wireless,o={}){return{brand,model,w,port,proto,wireless,cable:o.cable||(port.includes("Lightning")?"USB‑C → Lightning":"USB‑C → USB‑C"),cableW:o.cableW||(w>100?240:w>60?100:60),data:o.data||"USB 2.0 suffit pour la charge",video:o.video||false,wall:o.wall||Math.max(20,w),car:o.car||Math.max(30,Math.min(100,w)),family:o.family||"Smartphone",note:o.note||"",wirelessStd:o.wirelessStd||wireless,source:o.source||"",proprietary:o.proprietary||false,wallPorts:o.wallPorts||"1× USB‑C minimum"}}
 let D=[];
 [
@@ -172,7 +233,7 @@ const wirelessProduct=(d.wireless!=="Non" && /Qi|MagSafe/i.test(d.wireless+" "+d
 setAffiliateLink("wallLink",wallProduct,wallLabel);
 setAffiliateLink("cableLink",cableProduct,cableLabel);
 setAffiliateLink("carLink",carProduct,carChoice?carChoice.label:"");
-setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;out.scrollIntoView({behavior:"smooth",block:"start"})}randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);// ---------------- MULTI-APPAREILS ----------------
+setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;showAnkerSingle(d);out.scrollIntoView({behavior:"smooth",block:"start"})}randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);// ---------------- MULTI-APPAREILS ----------------
 const mq=document.getElementById("mq"),
       mlist=document.getElementById("mresultsList"),
       selectedBox=document.getElementById("selectedDevices"),
@@ -307,6 +368,16 @@ document.getElementById("calcMultiBtn").onclick=()=>{
     ? "Avant de choisir : vérifie la répartition de puissance entre les ports utilisés et la compatibilité PD/PPS de chaque appareil. Le total annoncé ne garantit pas la vitesse maximale simultanée."
     : "Aucun modèle du catalogue n’est proposé ici pour cette combinaison de puissance et de ports USB-C. Il peut être nécessaire de répartir les appareils entre plusieurs chargeurs.";
 
+  const ankerCandidate=chooseAnkerMulti(selectedMulti,wallTarget);
+  showAnkerAlternative("multiWallLink",ankerCandidate,
+    "Alternative à comparer : vérifie la répartition de puissance et le PPS sur chaque port utilisé. Le total annoncé ne garantit pas la charge maximale simultanée.");
+  const cableBox=document.getElementById("multiCables");
+  selectedMulti.filter(d=>chooseAnkerCable(d)).forEach(d=>{
+    const row=document.createElement("div");row.className="footnote";row.style.paddingTop="10px";
+    const link=document.createElement("a");link.href=PRODUCTS.ankerCable;link.target="_blank";link.rel="sponsored noopener";link.style.color="#7dd3fc";
+    link.textContent=d.model+" : câble Anker Prime USB-C 240 W (charge)";
+    row.appendChild(link);cableBox.appendChild(row);
+  });
   multiResult.classList.remove("hidden");
   multiResult.scrollIntoView({behavior:"smooth",block:"start"});
 };
