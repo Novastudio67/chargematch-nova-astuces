@@ -184,7 +184,7 @@ function showAnkerSingle(d){
     (wallChoice && wallChoice.url===PRODUCTS.anker160 ? "160 W au total, jusqu’à 140 W sur un port USB-C. " : "")
     +"Vérifie la compatibilité PD/PPS du modèle et la puissance disponible par port. Les ports partagent la puissance si plusieurs appareils sont branchés."
     +(d.model.includes("Galaxy") && d.wall===45 ? " Pour Samsung 45 W, un câble USB-C 5 A est nécessaire." : ""));
-  showAnkerAlternative("cableLink",chooseAnkerCable(d),
+  showAnkerAlternative("cableLink",d.cable.includes("Lightning")?null:chooseAnkerCable(d),
     d.cable.includes("Lightning")?"Câble USB-C vers Lightning certifié MFi, 1,8 m. Utilise un chargeur USB-C Power Delivery compatible pour la charge rapide.":"Alternative pour la charge : jusqu’à 240 W avec appareils et chargeur compatibles. Pour le transfert rapide ou un écran, conserve un câble explicitement compatible données/vidéo ; 240 W ne garantit pas ces fonctions."
     +(d.brand==="Samsung" && d.wall===45 ? " Vérifie la certification 5 A/e-marker pour la charge 45 W." : ""));
   showAnkerAlternative("wirelessLink",chooseAnkerWireless(d)?{url:PRODUCTS.ankerWireless,label:"Voir Anker Prime Qi2 25 W 3-en-1"}:null,
