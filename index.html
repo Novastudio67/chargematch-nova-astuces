@@ -85,6 +85,7 @@ linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height
 <div class="footer">Nova Charge • Nova Astuces • Guide indicatif : la puissance réellement absorbée dépend de l’appareil, de la température, du niveau de batterie, du câble et du protocole du chargeur.<br><span id="affiliateDisclosure" style="display:none">Certains liens peuvent être affiliés : Nova Astuces peut percevoir une commission sans surcoût pour toi.</span></div></div>
 <script>
 const PRODUCTS={
+  lightning:"https://bsenova.com/products/anker-cable-usb-c-lightning-mfi-1-8-m",
   anker30:"https://bsenova.com/products/anker-511-nano-3-30w-a2147-chargeur-gan-usb-c",
   anker45:"https://bsenova.com/products/anker-nano-45w-a2692-chargeur-gan-usb-c-avec-cable",
   anker65:"https://bsenova.com/products/anker-735-nano-ii-65w-a2667-chargeur-gan-3-ports",
@@ -143,6 +144,7 @@ function chooseAnkerWall(d){
   return watts ? {url:PRODUCTS["anker"+watts],label:"Voir le chargeur Anker "+watts+" W"} : null;
 }
 function chooseAnkerCable(d){
+  if(d.cable.includes("Lightning")) return {url:PRODUCTS.lightning,label:"Voir le câble Anker Lightning MFi 1,8 m"};
   const usbC=!d.cable.includes("Lightning") && /USB.C.*USB.C/.test(d.cable);
   return usbC && !d.proprietary && d.cableW<=240
     ? {url:PRODUCTS.ankerCable,label:"Voir le câble Anker Prime USB-C 240 W"} : null;
@@ -183,7 +185,7 @@ function showAnkerSingle(d){
     +"Vérifie la compatibilité PD/PPS du modèle et la puissance disponible par port. Les ports partagent la puissance si plusieurs appareils sont branchés."
     +(d.model.includes("Galaxy") && d.wall===45 ? " Pour Samsung 45 W, un câble USB-C 5 A est nécessaire." : ""));
   showAnkerAlternative("cableLink",chooseAnkerCable(d),
-    "Alternative pour la charge : jusqu’à 240 W avec appareils et chargeur compatibles. Pour le transfert rapide ou un écran, conserve un câble explicitement compatible données/vidéo ; 240 W ne garantit pas ces fonctions."
+    d.cable.includes("Lightning")?"Câble USB-C vers Lightning certifié MFi, 1,8 m. Utilise un chargeur USB-C Power Delivery compatible pour la charge rapide.":"Alternative pour la charge : jusqu’à 240 W avec appareils et chargeur compatibles. Pour le transfert rapide ou un écran, conserve un câble explicitement compatible données/vidéo ; 240 W ne garantit pas ces fonctions."
     +(d.brand==="Samsung" && d.wall===45 ? " Vérifie la certification 5 A/e-marker pour la charge 45 W." : ""));
   showAnkerAlternative("wirelessLink",chooseAnkerWireless(d)?{url:PRODUCTS.ankerWireless,label:"Voir Anker Prime Qi2 25 W 3-en-1"}:null,
     "Station pour iPhone compatible, Apple Watch et écouteurs compatibles. Jusqu’à 25 W sur un téléphone Qi2 25 W compatible ; les autres modèles restent limités par leur standard. Vérifie le modèle d’iPhone, la coque et les versions logicielles requises.");
@@ -237,8 +239,8 @@ q.addEventListener("input",()=>renderList(q.value));q.addEventListener("focus",(
 function selectDevice(d){current=d;q.value=d.model;list.style.display="none";out.classList.remove("hidden");dName.textContent=d.model;dBrand.textContent=d.brand;dFamily.textContent=d.family;wired.textContent=d.w+" W";port.textContent=d.port;proto.textContent=d.proto;wireless.textContent=d.wireless;mainNote.textContent=d.note||"Le chargeur peut être plus puissant que l’appareil : l’appareil négocie la puissance qu’il accepte.";wall.textContent=d.wall+" W USB‑C";wallWhy.textContent=d.proprietary?`Pour la vitesse maximale, vérifie le protocole propriétaire ${d.brand}. Pour un usage universel, un chargeur USB‑C PD/PPS reste pratique.`:`Puissance suffisante pour exploiter correctement la charge rapide de cet appareil sans surdimensionner inutilement.`;wallProto.textContent=d.proto;wallPorts.textContent=d.wallPorts;cable.textContent=d.cable;cableWhy.textContent=d.cable.includes("Lightning")?"Utilise un câble USB‑C vers Lightning Apple ou certifié MFi, compatible avec la charge rapide USB‑PD.":d.cableW>=100?"Prends un câble certifié pour la puissance et, si nécessaire, un câble 5 A/e‑marker.":"Un bon câble 60 W suffit pour cet usage de charge.";cablePower.textContent=d.cable.includes("Lightning")?"Apple ou certifié MFi":d.cableW+" W minimum conseillé";cableData.textContent=d.data;car.textContent=d.car+" W";carWhy.textContent=`Choisis un chargeur allume‑cigare USB‑C capable de fournir au moins ${d.car} W sur un seul port si tu veux conserver une charge rapide.`;carProto.textContent=d.proprietary?"PD/PPS + protocole marque si disponible":d.proto;carPorts.textContent="USB‑C PD • 12/24 V";wirelessRec.textContent=d.wireless==="Non"?"Pas prioritaire":d.wireless;wirelessWhy.textContent=d.wireless==="Non"?"Ce modèle n’est pas ciblé ici pour la recharge sans fil.":"Pour de bonnes performances, utilise un socle ou chargeur certifié compatible avec le standard indiqué.";wirelessStd.textContent=d.wirelessStd;const extra=d.video?" Il peut aussi être pertinent de choisir un câble compatible données/vidéo si tu relies l’appareil à un écran.":"";verdict.innerHTML=`Pour <b>${d.model}</b>, vise un chargeur secteur <b>${d.wall} W</b>, un câble <b>${d.cable}</b> ${d.cable.includes("Lightning")?"Apple ou certifié MFi, compatible avec la charge rapide USB‑PD":`capable d’au moins <b>${d.cableW} W</b>`}, et en voiture un modèle USB‑C d’environ <b>${d.car} W</b>. ${d.proprietary?`Attention : la vitesse maximale annoncée par ${d.brand} peut demander le chargeur/câble propriétaire.`:"Un chargeur plus puissant reste généralement compatible : l’appareil ne prend que ce qu’il négocie."}${extra}`;const wallProduct=d.wall<=30?PRODUCTS.wall30:(d.wall<=45?PRODUCTS.wall45:(d.wall<=65?PRODUCTS.wall65:(d.wall<=100?PRODUCTS.wall100:(d.wall<=160?PRODUCTS.wall160:""))));
 const wallLabel=d.wall<=30?"Voir le chargeur UGREEN Nexode 30W":(d.wall<=45?"Voir le chargeur UGREEN Nexode Mini 45W":(d.wall<=65?"Voir le chargeur UGREEN 65W":(d.wall<=100?"Voir le chargeur UGREEN Nexode Pro 100W":"Voir le chargeur UGREEN Nexode Pro 160W")));
 const isUsbCCable=d.cable.replaceAll("‑","-").includes("USB-C") && !d.cable.includes("Lightning");
-const cableProduct=isUsbCCable?(d.cableW<=60?PRODUCTS.cable60:(d.cableW<=100?PRODUCTS.cable100:(d.cableW<=240?PRODUCTS.cableUsbC:""))):"";
-const cableLabel=isUsbCCable?(d.cableW<=60?"Voir le câble UGREEN USB-C 60W":(d.cableW<=100?"Voir le câble UGREEN USB-C 100W":"Voir le câble UGREEN USB-C 240W")):"Voir un câble compatible";
+const cableProduct=d.cable.includes("Lightning")?PRODUCTS.lightning:isUsbCCable?(d.cableW<=60?PRODUCTS.cable60:(d.cableW<=100?PRODUCTS.cable100:(d.cableW<=240?PRODUCTS.cableUsbC:""))):"";
+const cableLabel=d.cable.includes("Lightning")?"Voir le câble Anker Lightning MFi 1,8 m":isUsbCCable?(d.cableW<=60?"Voir le câble UGREEN USB-C 60W":(d.cableW<=100?"Voir le câble UGREEN USB-C 100W":"Voir le câble UGREEN USB-C 240W")):"Voir un câble compatible";
 const carChoice=chooseCarCharger(d);
 const carProduct=carChoice?carChoice.url:"";
 if(carChoice) carWhy.textContent+= " "+carChoice.note;
@@ -383,8 +385,8 @@ document.getElementById("calcMultiBtn").onclick=()=>{
   const cableBox=document.getElementById("multiCables");
   selectedMulti.filter(d=>chooseAnkerCable(d)).forEach(d=>{
     const row=document.createElement("div");row.className="footnote";row.style.paddingTop="10px";
-    const link=document.createElement("a");link.href=PRODUCTS.ankerCable;link.target="_blank";link.rel="sponsored noopener";link.style.color="#7dd3fc";
-    link.textContent=d.model+" : câble Anker Prime USB-C 240 W (charge)";
+    const link=document.createElement("a");link.href=chooseAnkerCable(d).url;link.target="_blank";link.rel="sponsored noopener";link.style.color="#7dd3fc";
+    link.textContent=d.model+(d.cable.includes("Lightning")?" : câble Anker USB-C vers Lightning MFi 1,8 m":" : câble Anker Prime USB-C 240 W (charge)");
     row.appendChild(link);cableBox.appendChild(row);
   });
   multiResult.classList.remove("hidden");
