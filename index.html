@@ -85,6 +85,8 @@ linear-gradient(180deg,#040916,#071024 55%,#050b18);color:var(--text);min-height
 <div class="footer">Nova Charge • Nova Astuces • Guide indicatif : la puissance réellement absorbée dépend de l’appareil, de la température, du niveau de batterie, du câble et du protocole du chargeur.<br><span id="affiliateDisclosure" style="display:none">Certains liens peuvent être affiliés : Nova Astuces peut percevoir une commission sans surcoût pour toi.</span></div></div>
 <script>
 const PRODUCTS={
+  ankerPower165:"https://link.amazon/B03c4qTkR",
+  car145:"https://link.amazon/B06shYxj3",
   lightning:"https://bsenova.com/products/anker-cable-usb-c-lightning-mfi-1-8-m",
   anker30:"https://bsenova.com/products/anker-511-nano-3-30w-a2147-chargeur-gan-usb-c",
   anker45:"https://bsenova.com/products/anker-nano-45w-a2692-chargeur-gan-usb-c-avec-cable",
@@ -136,6 +138,36 @@ function chooseMultiCarCharger(devices){
   if((fitsMain(devices[0])&&fitsSecondary(devices[1])) || (fitsMain(devices[1])&&fitsSecondary(devices[0])))
     return {url:PRODUCTS.car,label:"Comparer le chargeur voiture UGREEN 130 W"};
   return null;
+}
+
+
+function chooseNewPortable(d){
+  if(d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto) || /PPS/i.test(d.proto) || d.wall>100) return null;
+  return {url:PRODUCTS.ankerPower165,label:"Voir la batterie Anker 25 000 mAh · 165 W"};
+}
+function chooseNewCar(d){
+  if(d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto) || /PPS/i.test(d.proto) || d.car>100) return null;
+  return {url:PRODUCTS.car145,label:"Voir UGREEN voiture 145 W · câble rétractable"};
+}
+function showNewOption(baseId,suffix,choice,note){
+  const base=document.getElementById(baseId);if(!base)return;
+  let box=document.getElementById(baseId+suffix);
+  if(!box){
+    box=document.createElement("div");box.id=baseId+suffix;box.style.width="100%";
+    const a=document.createElement("a");a.id=baseId+suffix+"Link";
+    const button=document.createElement("button");button.className="btn secondary";a.appendChild(button);
+    const detail=document.createElement("div");detail.className="footnote";detail.style.marginTop="8px";
+    box.appendChild(a);box.appendChild(detail);base.parentElement.appendChild(box);
+  }
+  box.classList.toggle("hidden",!choice);
+  setAffiliateLink(baseId+suffix+"Link",choice?choice.url:"",choice?choice.label:"");
+  box.querySelector(".footnote").textContent=choice?note:"";
+}
+function showNewSingle(d){
+  showNewOption("wallLink","Portable",chooseNewPortable(d),
+    "Option nomade : batterie Anker A1695, 25 000 mAh. Jusqu’à 100 W sur une sortie USB-C ; 165 W au total pour deux appareils, 130 W au total pour trois ou quatre. Deux câbles USB-C intégrés et une prise USB-C. Pour Lightning, utilise un câble USB-C vers Lightning séparé. La puissance reçue dépend de l’appareil ; la charge rapide PPS n’est pas validée ici.");
+  showNewOption("carLink","Retractable",chooseNewCar(d),
+    "Option voiture : UGREEN Nexode 145 W au total, câble USB-C rétractable jusqu’à 100 W. Deux prises USB-C et une USB-A supplémentaires. Le total n’est pas disponible sur chaque sortie. Vérifie la répartition si plusieurs appareils sont branchés ; la charge rapide PPS n’est pas validée ici. Pour Lightning, utilise une prise et un câble adapté.");
 }
 
 function chooseAnkerWall(d){
@@ -250,7 +282,7 @@ const wirelessProduct=(d.wireless!=="Non" && /Qi|MagSafe/i.test(d.wireless+" "+d
 setAffiliateLink("wallLink",wallProduct,wallLabel);
 setAffiliateLink("cableLink",cableProduct,cableLabel);
 setAffiliateLink("carLink",carProduct,carChoice?carChoice.label:"");
-setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;showAnkerSingle(d);out.scrollIntoView({behavior:"smooth",block:"start"})}
+setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;showAnkerSingle(d);showNewSingle(d);out.scrollIntoView({behavior:"smooth",block:"start"})}
 randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);
 
 // ---------------- MULTI-APPAREILS ----------------
