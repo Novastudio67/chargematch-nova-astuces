@@ -143,7 +143,6 @@ function chooseMultiCarCharger(devices){
   return null;
 }
 
-
 function chooseNewPortable(d){
   if(d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto) || /PPS/i.test(d.proto) || d.wall>100) return null;
   return {url:PRODUCTS.ankerPower165,label:"Voir la batterie Anker 25 000 mAh · 165 W"};
@@ -181,7 +180,11 @@ function chooseAnkerWall(d){
 function chooseAnkerCable(d){
   if(d.cable.includes("Lightning")) return {url:PRODUCTS.lightning,label:"Voir le câble Anker Lightning MFi 1,8 m"};
   const usbC=!d.cable.includes("Lightning") && /USB.C.*USB.C/.test(d.cable);
-  return usbC && !d.proprietary && d.cableW<=240
+  if(!usbC || d.proprietary) return null;
+  // Ne proposer le câble Anker 240 W que lorsqu'un câble >100 W est réellement requis.
+  // Pour les besoins 60 W et 100 W, Nova Charge conserve les câbles UGREEN de puissance adaptée
+  // au lieu de surdimensionner inutilement la recommandation.
+  return d.cableW>100 && d.cableW<=240
     ? {url:PRODUCTS.ankerCable,label:"Voir le câble Anker Prime USB-C 240 W"} : null;
 }
 function chooseAnkerWireless(d){
@@ -219,9 +222,10 @@ function showAnkerSingle(d){
     (wallChoice && wallChoice.url===PRODUCTS.anker160 ? "160 W au total, jusqu’à 140 W sur un port USB-C. " : "")
     +"Vérifie la compatibilité PD/PPS du modèle et la puissance disponible par port. Les ports partagent la puissance si plusieurs appareils sont branchés."
     +(d.model.includes("Galaxy") && d.wall===45 ? " Pour Samsung 45 W, un câble USB-C 5 A est nécessaire." : ""));
-  showAnkerAlternative("cableLink",d.cable.includes("Lightning")?null:chooseAnkerCable(d),
-    d.cable.includes("Lightning")?"Câble USB-C vers Lightning certifié MFi, 1,8 m. Utilise un chargeur USB-C Power Delivery compatible pour la charge rapide.":"Alternative pour la charge : jusqu’à 240 W avec appareils et chargeur compatibles. Pour le transfert rapide ou un écran, conserve un câble explicitement compatible données/vidéo ; 240 W ne garantit pas ces fonctions."
-    +(d.brand==="Samsung" && d.wall===45 ? " Vérifie la certification 5 A/e-marker pour la charge 45 W." : ""));
+  const ankerCableChoice=d.cable.includes("Lightning")?null:chooseAnkerCable(d);
+  showAnkerAlternative("cableLink",ankerCableChoice,
+    ankerCableChoice?"Alternative haute puissance pour les appareils qui nécessitent plus de 100 W. Pour le transfert rapide ou un écran, vérifie aussi explicitement la compatibilité données/vidéo du câble.":""
+    +(d.brand==="Samsung" && d.wall===45 && ankerCableChoice ? " Vérifie la certification 5 A/e-marker pour la charge 45 W." : ""));
   showAnkerAlternative("wirelessLink",chooseAnkerWireless(d)?{url:PRODUCTS.ankerWireless,label:"Voir Anker Prime Qi2 25 W 3-en-1"}:null,
     "Station pour iPhone compatible, Apple Watch et écouteurs compatibles. Jusqu’à 25 W sur un téléphone Qi2 25 W compatible ; les autres modèles restent limités par leur standard. Vérifie le modèle d’iPhone, la coque et les versions logicielles requises.");
 }
@@ -244,11 +248,9 @@ let D=[];
 ["iPad (10e génération)","iPad Air M2 11″","iPad Air M2 13″","iPad Pro M4 11″","iPad Pro M4 13″","iPad mini (USB‑C)"].forEach(m=>D.push(mk("Apple",m,30,"USB‑C","USB Power Delivery","Non / selon accessoire",{family:"Tablette",wall:30,car:45,data:"USB‑C : données selon modèle",video:true,note:"Pour un iPad, un chargeur USB‑C PD de 30 W est un choix polyvalent. Pour usage simultané ou accessoires, 45 W apporte plus de marge."})));
 [["MacBook Air 13″ M2/M3/M4",67],["MacBook Air 15″ M2/M3/M4",70],["MacBook Pro 14″",96],["MacBook Pro 16″",140]].forEach(([m,w])=>D.push(mk("Apple",m,w,"USB‑C / MagSafe 3","USB Power Delivery","Non",{family:"Ordinateur",wall:w,car:Math.min(100,w),cableW:w>100?240:100,data:"USB‑C avec données/vidéo selon port",video:true,note:"Pour ordinateur, vérifie que le chargeur voiture peut réellement fournir la puissance annoncée sur un seul port USB‑C."})));
 
-// Samsung Galaxy : séries S, FE, Z Fold/Flip et A les plus recherchées.
 [["Galaxy S25",25],["Galaxy S25 Edge",25],["Galaxy S25+",45],["Galaxy S25 Ultra",45],["Galaxy S24",25],["Galaxy S24+",45],["Galaxy S24 Ultra",45],["Galaxy S24 FE",25],["Galaxy S23",25],["Galaxy S23+",45],["Galaxy S23 Ultra",45],["Galaxy S23 FE",25],["Galaxy S22",25],["Galaxy S22+",45],["Galaxy S22 Ultra",45],["Galaxy S21",25],["Galaxy S21+",25],["Galaxy S21 Ultra",25],["Galaxy S21 FE",25],["Galaxy S20",25],["Galaxy S20+",25],["Galaxy S20 Ultra",25],["Galaxy S20 FE",25],["Galaxy Z Fold6",25],["Galaxy Z Flip6",25],["Galaxy Z Fold5",25],["Galaxy Z Flip5",25],["Galaxy Z Fold4",25],["Galaxy Z Flip4",25],["Galaxy Z Fold3",25],["Galaxy Z Flip3",15],["Galaxy A56",45],["Galaxy A55",25],["Galaxy A54",25],["Galaxy A53",25],["Galaxy A36",45],["Galaxy A35",25],["Galaxy A34",25],["Galaxy A26 5G",25],["Galaxy A25 5G",25],["Galaxy A16 5G",25],["Galaxy A15 5G",25],["Galaxy A14 5G",15]].forEach(([m,w])=>D.push(mk("Samsung",m,w,"USB‑C",w===45?"USB PD + PPS / Super Fast Charging 2.0":"USB PD + PPS / Super Fast Charging","Qi / sans fil selon modèle",{wall:w,car:Math.max(30,w),cableW:w===45?100:60,note:w===45?"Pour atteindre 45 W chez Samsung, utilise un chargeur PD/PPS compatible et un câble 5 A.":"Un chargeur USB‑C PD/PPS est le choix le plus sûr pour la charge rapide Galaxy.",source:"https://www.samsung.com/fr/support/mobile-devices/which-type-of-charger-does-my-galaxy-device-accept/"})));
 ["Galaxy Tab S10+","Galaxy Tab S10 Ultra","Galaxy Tab S9","Galaxy Tab S9+","Galaxy Tab S9 Ultra"].forEach(m=>D.push(mk("Samsung",m,45,"USB‑C","USB PD + PPS","Non / accessoire",{family:"Tablette",wall:45,car:45,cableW:100,note:"Pour 45 W, privilégie un câble USB‑C 5 A et un chargeur PPS compatible."})));
 
-// Google Pixel : générations récentes + modèles a et Fold.
 [["Pixel 10",30],["Pixel 10 Pro",30],["Pixel 10 Pro XL",45],["Pixel 10 Pro Fold",30],["Pixel 9",27],["Pixel 9 Pro",27],["Pixel 9 Pro XL",37],["Pixel 9 Pro Fold",21],["Pixel 9a",23],["Pixel 8",27],["Pixel 8 Pro",30],["Pixel 8a",18],["Pixel 7",20],["Pixel 7 Pro",23],["Pixel 7a",18],["Pixel Fold",21],["Pixel 6",21],["Pixel 6 Pro",23],["Pixel 6a",18],["Pixel 5",18],["Pixel 5a",18]].forEach(([m,w])=>D.push(mk("Google",m,w,"USB‑C","USB Power Delivery + PPS","Qi / Qi2 selon modèle",{wall:w>=37?45:30,car:w>=37?45:30,cableW:60,source:"https://support.google.com/pixelphone/answer/7106961?hl=fr",note:"Google recommande un chargeur USB‑C PD/PPS. Un chargeur plus puissant est compatible, le téléphone limite lui-même la puissance."})));
 
 [["Xiaomi 15",90],["Xiaomi 15 Ultra",90],["Xiaomi 14",90],["Xiaomi 14 Ultra",90],["Xiaomi 13",67],["Xiaomi 13 Pro",120],["Redmi Note 14 Pro+ 5G",120],["Redmi Note 14 Pro 5G",45],["Redmi Note 13 Pro+ 5G",120],["Redmi Note 13 Pro 5G",67],["POCO F7 Ultra",120],["POCO F7 Pro",90],["POCO X7 Pro",90]].forEach(([m,w])=>D.push(mk(m.startsWith("Redmi")?"Redmi":m.startsWith("POCO")?"POCO":"Xiaomi",m,w,"USB‑C",w>45?"Xiaomi HyperCharge / charge propriétaire + PD selon modèle":"USB‑C rapide / PD selon modèle",m.startsWith("Xiaomi")?"Sans fil selon modèle":"Généralement non",{wall:w,car:w>=90?100:65,cableW:w>60?100:60,proprietary:w>45,note:w>45?"Pour atteindre la puissance maximale annoncée, les modèles Xiaomi/Redmi/POCO très rapides peuvent nécessiter le chargeur et le câble propriétaires de la marque. Avec un chargeur USB‑PD classique, la puissance peut être plus basse.":"Vérifie le protocole exact du modèle.",source:m==="Xiaomi 15"?"https://www.mi.com/fr/product/xiaomi-15/specs/":""})));
@@ -271,11 +273,7 @@ brands.forEach(b=>{const el=document.createElement("button");el.type="button";el
 function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[+]/g," plus ").replace(/[^a-z0-9]+/g," ").trim()}
 function matchesDevice(d,value){const terms=norm(value).split(/\s+/).filter(Boolean);if(!terms.length)return true;const hay=norm(d.brand+" "+d.model);return terms.every(t=>hay.includes(t))}
 function closeSuggestions(input,box){box.style.display="none";input.setAttribute("aria-expanded","false");input.removeAttribute("aria-activedescendant")}
-function showSuggestions(input,box,arr,select){
-  box.replaceChildren();input.removeAttribute("aria-activedescendant");
-  arr.forEach((d,i)=>{const el=document.createElement("button");el.type="button";el.className="resultItem";el.id=box.id+"-"+i;el.setAttribute("role","option");el.setAttribute("aria-selected","false");el.tabIndex=-1;const title=document.createElement("b");title.textContent=d.model;const meta=document.createElement("span");meta.className="meta";meta.textContent=d.brand+" • "+d.family+" • "+d.w+" W";el.append(title,meta);el.onclick=()=>{select(d);closeSuggestions(input,box)};box.appendChild(el)});
-  box.style.display=arr.length?"block":"none";input.setAttribute("aria-expanded",String(arr.length>0));
-}
+function showSuggestions(input,box,arr,select){box.replaceChildren();input.removeAttribute("aria-activedescendant");arr.forEach((d,i)=>{const el=document.createElement("button");el.type="button";el.className="resultItem";el.id=box.id+"-"+i;el.setAttribute("role","option");el.setAttribute("aria-selected","false");el.tabIndex=-1;const title=document.createElement("b");title.textContent=d.model;const meta=document.createElement("span");meta.className="meta";meta.textContent=d.brand+" • "+d.family+" • "+d.w+" W";el.append(title,meta);el.onclick=()=>{select(d);closeSuggestions(input,box)};box.appendChild(el)});box.style.display=arr.length?"block":"none";input.setAttribute("aria-expanded",String(arr.length>0))}
 function renderList(v){const arr=D.filter(d=>(activeBrand==="Tous"||d.brand===activeBrand)&&matchesDevice(d,v)).slice(0,30);showSuggestions(q,list,arr,selectDevice);searchStatus.textContent=arr.length?(arr.length+" résultat(s) affiché(s). Utilise les flèches puis Entrée, ou clique sur un modèle."):"Aucun appareil trouvé. Vérifie le modèle ou choisis une autre marque."}
 function bindSuggestionKeys(input,box,render){input.addEventListener("keydown",e=>{const keys=["ArrowDown","ArrowUp","Enter","Escape","Tab"];if(!keys.includes(e.key))return;if(e.key==="Escape"||e.key==="Tab"){closeSuggestions(input,box);return}if(e.key!=="Enter"&&box.style.display==="none")render(input.value);const options=[...box.querySelectorAll('[role="option"]')];if(!options.length)return;e.preventDefault();let i=options.findIndex(x=>x.id===input.getAttribute("aria-activedescendant"));if(e.key==="Enter"){if(box.style.display!=="none")options[Math.max(i,0)].click();return}i=e.key==="ArrowDown"?(i+1)%options.length:(i<=0?options.length-1:i-1);options.forEach((x,j)=>x.setAttribute("aria-selected",String(j===i)));input.setAttribute("aria-activedescendant",options[i].id);options[i].scrollIntoView({block:"nearest"})})}
 q.addEventListener("input",()=>{current=null;out.classList.add("hidden");renderList(q.value)});q.addEventListener("focus",()=>renderList(q.value));bindSuggestionKeys(q,list,renderList);
@@ -285,153 +283,14 @@ const wallLabel=d.wall<=30?"Voir le chargeur UGREEN Nexode 30W":(d.wall<=45?"Voi
 const isUsbCCable=d.cable.replaceAll("‑","-").includes("USB-C") && !d.cable.includes("Lightning");
 const cableProduct=d.cable.includes("Lightning")?PRODUCTS.lightning:isUsbCCable?(d.cableW<=60?PRODUCTS.cable60:(d.cableW<=100?PRODUCTS.cable100:(d.cableW<=240?PRODUCTS.cableUsbC:""))):"";
 const cableLabel=d.cable.includes("Lightning")?"Voir le câble Anker Lightning MFi 1,8 m":isUsbCCable?(d.cableW<=60?"Voir le câble UGREEN USB-C 60W":(d.cableW<=100?"Voir le câble UGREEN USB-C 100W":"Voir le câble UGREEN USB-C 240W")):"Voir un câble compatible";
-const carChoice=chooseCarCharger(d);
-const carProduct=carChoice?carChoice.url:"";
-if(carChoice) carWhy.textContent+= " "+carChoice.note;
-if(d.proprietary) carWhy.textContent+=" La vitesse maximale propriétaire de la marque n’est pas garantie par ce chargeur universel.";
-carPorts.textContent=carChoice && carChoice.url===PRODUCTS.car63?"1× USB-C + 1× USB-A":carChoice && carChoice.url===PRODUCTS.car30?"2× USB-C + 1× USB-A":"2× USB-C + 1× USB-A";
-const wirelessProduct=(d.wireless!=="Non" && /Qi|MagSafe/i.test(d.wireless+" "+d.wirelessStd))?PRODUCTS.wireless:"";
-setAffiliateLink("wallLink",wallProduct,wallLabel);
-setAffiliateLink("cableLink",cableProduct,cableLabel);
-setAffiliateLink("carLink",carProduct,carChoice?carChoice.label:"");
-setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;showAnkerSingle(d);showNewSingle(d);out.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
+const carChoice=chooseCarCharger(d);const carProduct=carChoice?carChoice.url:"";if(carChoice) carWhy.textContent+= " "+carChoice.note;if(d.proprietary) carWhy.textContent+=" La vitesse maximale propriétaire de la marque n’est pas garantie par ce chargeur universel.";carPorts.textContent=carChoice && carChoice.url===PRODUCTS.car63?"1× USB-C + 1× USB-A":carChoice && carChoice.url===PRODUCTS.car30?"2× USB-C + 1× USB-A":"2× USB-C + 1× USB-A";const wirelessProduct=(d.wireless!=="Non" && /Qi|MagSafe/i.test(d.wireless+" "+d.wirelessStd))?PRODUCTS.wireless:"";setAffiliateLink("wallLink",wallProduct,wallLabel);setAffiliateLink("cableLink",cableProduct,cableLabel);setAffiliateLink("carLink",carProduct,carChoice?carChoice.label:"");setAffiliateLink("wirelessLink",wirelessProduct,"Voir UGREEN MagFlow Pro Qi2 25W");sourceNote.innerHTML=d.source?`Fiche basée sur les informations constructeur disponibles pour cette famille/modèle. Source officielle : <a href="${d.source}" target="_blank" rel="noopener">consulter la page</a>. Les puissances de charge peuvent varier selon la batterie, la température et le protocole.`:`Les valeurs sont des recommandations de compatibilité. Pour les modèles à charge propriétaire, vérifie la documentation constructeur avant achat si tu veux atteindre la puissance maximale annoncée.`;showAnkerSingle(d);showNewSingle(d);out.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})}
 randomBtn.onclick=()=>selectDevice(D[Math.floor(Math.random()*D.length)]);
 
-// ---------------- MULTI-APPAREILS ----------------
-const mq=document.getElementById("mq"),
-      mlist=document.getElementById("mresultsList"),
-      selectedBox=document.getElementById("selectedDevices"),
-      multiResult=document.getElementById("multiResult");
-let selectedMulti=[];
-
+const mq=document.getElementById("mq"),mlist=document.getElementById("mresultsList"),selectedBox=document.getElementById("selectedDevices"),multiResult=document.getElementById("multiResult");let selectedMulti=[];
 function renderMultiList(v){if(selectedMulti.length>=5){closeSuggestions(mq,mlist);multiStatus.textContent="5 appareils sélectionnés : retire un appareil pour en ajouter un autre.";return}const arr=D.filter(d=>!selectedMulti.includes(d)&&matchesDevice(d,v)).slice(0,30);showSuggestions(mq,mlist,arr,addMulti);multiStatus.textContent=arr.length?arr.length+" résultat(s) affiché(s). Sélectionne un appareil à ajouter.":"Aucun appareil disponible pour cette recherche. Vérifie le modèle ou les appareils déjà ajoutés."}
-
-function addMulti(d){
-  if(selectedMulti.length>=5){
-    multiStatus.textContent="Maximum 5 appareils. Retire un appareil avant d’en ajouter un autre.";
-    return;
-  }
-  if(!selectedMulti.includes(d)) selectedMulti.push(d);
-  mq.value="";
-  closeSuggestions(mq,mlist);
-  renderSelectedMulti();
-  multiResult.classList.add("hidden");
-}
-
-function renderSelectedMulti(){
-  selectedBox.innerHTML="";
-  multiStatus.textContent=selectedMulti.length+" appareil(s) sélectionné(s) sur 5. "+(selectedMulti.length<2?"Ajoute au moins 2 appareils pour calculer ton ensemble.":"Tu peux calculer ton ensemble.");
-  selectedMulti.forEach((d,i)=>{
-    const chip=document.createElement("span");
-    chip.className="selectedChip";
-    chip.innerHTML=`${d.model} <button type="button" title="Retirer">×</button>`;
-    chip.querySelector("button").setAttribute("aria-label","Retirer "+d.model);
-    chip.querySelector("button").onclick=()=>{
-      selectedMulti.splice(i,1);
-      renderSelectedMulti();
-      multiResult.classList.add("hidden");
-    };
-    selectedBox.appendChild(chip);
-  });
-}
-
-mq.addEventListener("input",()=>renderMultiList(mq.value));
-mq.addEventListener("focus",()=>renderMultiList(mq.value));
-bindSuggestionKeys(mq,mlist,renderMultiList);
-
-document.getElementById("addExampleBtn").onclick=()=>{
-  const pool=D.filter(d=>!selectedMulti.includes(d));
-  if(pool.length) addMulti(pool[Math.floor(Math.random()*pool.length)]);
-};
-document.getElementById("clearMultiBtn").onclick=()=>{
-  selectedMulti=[];
-  mq.value="";closeSuggestions(mq,mlist);
-  renderSelectedMulti();
-  multiResult.classList.add("hidden");
-};
-
-function roundCharger(w){
-  const common=[30,45,65,67,100,120,140,160,200,240,300];
-  return common.find(x=>x>=w) || Math.ceil(w/50)*50;
-}
-
-document.getElementById("calcMultiBtn").onclick=()=>{
-  if(selectedMulti.length<2){
-    mq.focus();
-    multiStatus.textContent="Ajoute au moins 2 appareils avant de calculer ton ensemble.";
-    return;
-  }
-
-  const simultaneous = selectedMulti.reduce((sum,d)=>{
-    const practical = d.family==="Smartphone" ? Math.min(d.w,100) : d.w;
-    return sum + practical;
-  },0);
-
-  const wallTarget=roundCharger(simultaneous);
-  const ports=selectedMulti.length;
-  const carDemand=selectedMulti.reduce((sum,d)=>sum+Math.min(d.car,100),0);
-  const carTarget=roundCharger(Math.min(carDemand,240));
-  const proprietary=selectedMulti.filter(d=>d.proprietary);
-  const protocols=[...new Set(selectedMulti.map(d=>d.proto))];
-
-  document.getElementById("multiWall").textContent=`${wallTarget} W environ`;
-  document.getElementById("multiWallWhy").textContent=
-    `Pour charger ${selectedMulti.length} appareils en même temps, vise un chargeur GaN multiport avec une puissance totale d’environ ${wallTarget} W et vérifie surtout la puissance disponible sur chaque port.`;
-  document.getElementById("multiPorts").textContent=`${ports} ports utiles`;
-  document.getElementById("multiProtocols").textContent=proprietary.length
-    ? "PD/PPS + protocoles propriétaires à vérifier"
-    : "USB‑PD / PPS selon appareils";
-
-  document.getElementById("multiCar").textContent=`${carTarget} W max conseillé`;
-  document.getElementById("multiCarWhy").textContent=
-    carDemand>240
-      ? `La somme théorique dépasse ce qu’un chargeur voiture courant peut fournir confortablement. En voiture, privilégie les appareils prioritaires et vérifie la puissance par port.`
-      : `Choisis un modèle 12/24 V multiport capable de distribuer environ ${carTarget} W au total, sans oublier la limite par port.`;
-  document.getElementById("multiCarPorts").textContent=`${Math.min(ports,4)} ports pratiques`;
-
-  const carCandidate=chooseMultiCarCharger(selectedMulti);
-  setAffiliateLink("multiCarLink",carCandidate?carCandidate.url:"",carCandidate?carCandidate.label:"");
-  document.getElementById("multiCarProductNote").textContent=carCandidate
-    ? "Deux appareils en USB-C : place celui qui demande le plus de puissance sur USB-C2 (100 W en PD, jusqu’à 45 W en PPS), et l’autre sur USB-C1 (30 W maximum). Vérifie les protocoles et les câbles ; le total de 130 W ne garantit pas la vitesse maximale de chaque appareil."
-    : "Aucun modèle n’est recommandé automatiquement pour cette combinaison : vérifie la puissance et le protocole de chaque port. Trois prises ne signifient pas trois ports USB-C rapides.";
-
-  const grouped={};
-  selectedMulti.forEach(d=>{
-    const key=d.cable.includes("Lightning") ? `${d.cable} — Apple ou certifié MFi, compatible charge rapide USB‑PD` : `${d.cable} — ${d.cableW} W min.`;
-    grouped[key]=(grouped[key]||0)+1;
-  });
-  document.getElementById("multiCables").innerHTML=Object.entries(grouped)
-    .map(([k,n])=>`<div style="padding:7px 0;border-bottom:1px solid #1f354f"><b>${n}×</b> ${k}</div>`).join("");
-
-  let verdict=`Pour <b>${selectedMulti.map(d=>d.model).join(" + ")}</b>, cherche en priorité un chargeur GaN <b>${wallTarget} W</b> avec au moins <b>${ports} ports</b>. `;
-  if(proprietary.length){
-    verdict+=`Attention : ${proprietary.map(d=>d.model).join(", ")} ${proprietary.length>1?"utilisent":"utilise"} un protocole propriétaire pour atteindre la vitesse maximale. Un chargeur universel USB‑PD peut donc charger moins vite que le chargeur d’origine. `;
-  }
-  verdict+=`Le point le plus important est la <b>répartition de puissance par port</b> : un chargeur annoncé à ${wallTarget} W ne donne pas forcément cette puissance sur chaque sortie en même temps.`;
-
-  document.getElementById("multiVerdict").innerHTML=verdict;
-  const candidate=wallTarget<=100 && ports<=2 ? {url:PRODUCTS.wall100,label:"Comparer le UGREEN Nexode Pro 100W sur BSENOVA"}
-    : wallTarget<=160 && ports<=3 ? {url:PRODUCTS.wall160,label:"Comparer le UGREEN Nexode Pro 160W sur BSENOVA"} : null;
-  setAffiliateLink("multiWallLink",candidate?candidate.url:"",candidate?candidate.label:"");
-  document.getElementById("multiProductNote").textContent=candidate
-    ? "Avant de choisir : vérifie la répartition de puissance entre les ports utilisés et la compatibilité PD/PPS de chaque appareil. Le total annoncé ne garantit pas la vitesse maximale simultanée."
-    : "Aucun modèle du catalogue n’est proposé ici pour cette combinaison de puissance et de ports USB-C. Il peut être nécessaire de répartir les appareils entre plusieurs chargeurs.";
-
-  const ankerCandidate=chooseAnkerMulti(selectedMulti,wallTarget);
-  showAnkerAlternative("multiWallLink",ankerCandidate,
-    "Alternative à comparer : vérifie la répartition de puissance et le PPS sur chaque port utilisé. Le total annoncé ne garantit pas la charge maximale simultanée.");
-  const cableBox=document.getElementById("multiCables");
-  selectedMulti.filter(d=>chooseAnkerCable(d)).forEach(d=>{
-    const row=document.createElement("div");row.className="footnote";row.style.paddingTop="10px";
-    const link=document.createElement("a");link.href=chooseAnkerCable(d).url;link.target="_blank";link.rel="sponsored noopener";link.style.color="#7dd3fc";
-    link.textContent=d.model+(d.cable.includes("Lightning")?" : câble Anker USB-C vers Lightning MFi 1,8 m":" : câble Anker Prime USB-C 240 W (charge)");
-    row.appendChild(link);cableBox.appendChild(row);
-  });
-  multiStatus.textContent="Ensemble calculé pour "+selectedMulti.length+" appareils. Les recommandations figurent ci-dessous.";
-  multiResult.classList.remove("hidden");
-  multiResult.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-};
-
+function addMulti(d){if(selectedMulti.length>=5){multiStatus.textContent="Maximum 5 appareils. Retire un appareil avant d’en ajouter un autre.";return}if(!selectedMulti.includes(d)) selectedMulti.push(d);mq.value="";closeSuggestions(mq,mlist);renderSelectedMulti();multiResult.classList.add("hidden")}
+function renderSelectedMulti(){selectedBox.innerHTML="";multiStatus.textContent=selectedMulti.length+" appareil(s) sélectionné(s) sur 5. "+(selectedMulti.length<2?"Ajoute au moins 2 appareils pour calculer ton ensemble.":"Tu peux calculer ton ensemble.");selectedMulti.forEach((d,i)=>{const chip=document.createElement("span");chip.className="selectedChip";chip.innerHTML=`${d.model} <button type="button" title="Retirer">×</button>`;chip.querySelector("button").setAttribute("aria-label","Retirer "+d.model);chip.querySelector("button").onclick=()=>{selectedMulti.splice(i,1);renderSelectedMulti();multiResult.classList.add("hidden")};selectedBox.appendChild(chip)})}
+mq.addEventListener("input",()=>renderMultiList(mq.value));mq.addEventListener("focus",()=>renderMultiList(mq.value));bindSuggestionKeys(mq,mlist,renderMultiList);document.getElementById("addExampleBtn").onclick=()=>{const pool=D.filter(d=>!selectedMulti.includes(d));if(pool.length) addMulti(pool[Math.floor(Math.random()*pool.length)])};document.getElementById("clearMultiBtn").onclick=()=>{selectedMulti=[];mq.value="";closeSuggestions(mq,mlist);renderSelectedMulti();multiResult.classList.add("hidden")};
+function roundCharger(w){const common=[30,45,65,67,100,120,140,160,200,240,300];return common.find(x=>x>=w) || Math.ceil(w/50)*50}
+document.getElementById("calcMultiBtn").onclick=()=>{if(selectedMulti.length<2){mq.focus();multiStatus.textContent="Ajoute au moins 2 appareils avant de calculer ton ensemble.";return}const simultaneous=selectedMulti.reduce((sum,d)=>{const practical=d.family==="Smartphone"?Math.min(d.w,100):d.w;return sum+practical},0);const wallTarget=roundCharger(simultaneous);const ports=selectedMulti.length;const carDemand=selectedMulti.reduce((sum,d)=>sum+Math.min(d.car,100),0);const carTarget=roundCharger(Math.min(carDemand,240));const proprietary=selectedMulti.filter(d=>d.proprietary);document.getElementById("multiWall").textContent=`${wallTarget} W environ`;document.getElementById("multiWallWhy").textContent=`Pour charger ${selectedMulti.length} appareils en même temps, vise un chargeur GaN multiport avec une puissance totale d’environ ${wallTarget} W et vérifie surtout la puissance disponible sur chaque port.`;document.getElementById("multiPorts").textContent=`${ports} ports utiles`;document.getElementById("multiProtocols").textContent=proprietary.length?"PD/PPS + protocoles propriétaires à vérifier":"USB‑PD / PPS selon appareils";document.getElementById("multiCar").textContent=`${carTarget} W max conseillé`;document.getElementById("multiCarWhy").textContent=carDemand>240?`La somme théorique dépasse ce qu’un chargeur voiture courant peut fournir confortablement. En voiture, privilégie les appareils prioritaires et vérifie la puissance par port.`:`Choisis un modèle 12/24 V multiport capable de distribuer environ ${carTarget} W au total, sans oublier la limite par port.`;document.getElementById("multiCarPorts").textContent=`${Math.min(ports,4)} ports pratiques`;const carCandidate=chooseMultiCarCharger(selectedMulti);setAffiliateLink("multiCarLink",carCandidate?carCandidate.url:"",carCandidate?carCandidate.label:"");document.getElementById("multiCarProductNote").textContent=carCandidate?"Deux appareils en USB-C : place celui qui demande le plus de puissance sur USB-C2 (100 W en PD, jusqu’à 45 W en PPS), et l’autre sur USB-C1 (30 W maximum). Vérifie les protocoles et les câbles ; le total de 130 W ne garantit pas la vitesse maximale de chaque appareil.":"Aucun modèle n’est recommandé automatiquement pour cette combinaison : vérifie la puissance et le protocole de chaque port. Trois prises ne signifient pas trois ports USB-C rapides.";const grouped={};selectedMulti.forEach(d=>{const key=d.cable.includes("Lightning")?`${d.cable} — Apple ou certifié MFi, compatible charge rapide USB‑PD`:`${d.cable} — ${d.cableW} W min.`;grouped[key]=(grouped[key]||0)+1});document.getElementById("multiCables").innerHTML=Object.entries(grouped).map(([k,n])=>`<div style="padding:7px 0;border-bottom:1px solid #1f354f"><b>${n}×</b> ${k}</div>`).join("");let verdict=`Pour <b>${selectedMulti.map(d=>d.model).join(" + ")}</b>, cherche en priorité un chargeur GaN <b>${wallTarget} W</b> avec au moins <b>${ports} ports</b>. `;if(proprietary.length){verdict+=`Attention : ${proprietary.map(d=>d.model).join(", ")} ${proprietary.length>1?"utilisent":"utilise"} un protocole propriétaire pour atteindre la vitesse maximale. Un chargeur universel USB‑PD peut donc charger moins vite que le chargeur d’origine. `}verdict+=`Le point le plus important est la <b>répartition de puissance par port</b> : un chargeur annoncé à ${wallTarget} W ne donne pas forcément cette puissance sur chaque sortie en même temps.`;document.getElementById("multiVerdict").innerHTML=verdict;const candidate=wallTarget<=100&&ports<=2?{url:PRODUCTS.wall100,label:"Comparer le UGREEN Nexode Pro 100W sur BSENOVA"}:wallTarget<=160&&ports<=3?{url:PRODUCTS.wall160,label:"Comparer le UGREEN Nexode Pro 160W sur BSENOVA"}:null;setAffiliateLink("multiWallLink",candidate?candidate.url:"",candidate?candidate.label:"");document.getElementById("multiProductNote").textContent=candidate?"Avant de choisir : vérifie la répartition de puissance entre les ports utilisés et la compatibilité PD/PPS de chaque appareil. Le total annoncé ne garantit pas la vitesse maximale simultanée.":"Aucun modèle du catalogue n’est proposé ici pour cette combinaison de puissance et de ports USB-C. Il peut être nécessaire de répartir les appareils entre plusieurs chargeurs.";const ankerCandidate=chooseAnkerMulti(selectedMulti,wallTarget);showAnkerAlternative("multiWallLink",ankerCandidate,"Alternative à comparer : vérifie la répartition de puissance et le PPS sur chaque port utilisé. Le total annoncé ne garantit pas la charge maximale simultanée.");const cableBox=document.getElementById("multiCables");selectedMulti.filter(d=>chooseAnkerCable(d)).forEach(d=>{const row=document.createElement("div");row.className="footnote";row.style.paddingTop="10px";const link=document.createElement("a");link.href=chooseAnkerCable(d).url;link.target="_blank";link.rel="sponsored noopener";link.style.color="#7dd3fc";link.textContent=d.model+(d.cable.includes("Lightning")?" : câble Anker USB-C vers Lightning MFi 1,8 m":" : câble Anker Prime USB-C 240 W (charge)");row.appendChild(link);cableBox.appendChild(row)});multiStatus.textContent="Ensemble calculé pour "+selectedMulti.length+" appareils. Les recommandations figurent ci-dessous.";multiResult.classList.remove("hidden");multiResult.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})};
 </script></body></html>
-
-
