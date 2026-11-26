@@ -94,7 +94,7 @@ const PRODUCTS={
   car145:"https://bsenova.com/products/ugreen-nexode-chargeur-voiture-145w-retractable",
   lightning:"https://bsenova.com/products/anker-cable-usb-c-lightning-mfi-1-8-m",
   anker30:"https://bsenova.com/products/anker-511-nano-3-30w-a2147-chargeur-gan-usb-c",
-  anker45:"https://bsenova.com/products/anker-nano-45w-a2692-chargeur-gan-usb-c-avec-cable",
+  anker45:"https://bsenova.com/products/anker-nano-45w-a121d-chargeur-usb-c-ecran-intelligent",
   anker65:"https://bsenova.com/products/anker-735-nano-ii-65w-a2667-chargeur-gan-3-ports",
   anker100:"https://bsenova.com/products/anker-prime-100w-a2688-chargeur-gan-3-ports",
   anker160:"https://bsenova.com/products/anker-prime-160w-a2687-chargeur-gan-3-ports-avec-ecran",
@@ -178,6 +178,19 @@ function showNewSingle(d){
   showNewOption("carLink","Retractable",chooseNewCar(d),
     "Option voiture : UGREEN Nexode 145 W au total, câble USB-C rétractable jusqu’à 100 W. Deux prises USB-C et une USB-A supplémentaires. Le total n’est pas disponible sur chaque sortie. Vérifiez la répartition si plusieurs appareils sont branchés ; la charge rapide PPS n’est pas validée ici. Pour Lightning, utilisez une prise et un câble adapté.");
 }
+
+PRODUCTS.magBattery="https://bsenova.com/products/ugreen-magflow-qi2-25w-batterie-externe-magnetique-10000mah";
+PRODUCTS.magCarMount="https://bsenova.com/products/ugreen-magflow-25w-support-voiture-magnetique-qi2";
+function isMagneticPhone(d){const s=d.wireless+" "+d.wirelessStd;return /Qi2|MagSafe/i.test(s)&&!/sans MagSafe/i.test(s);}
+const showNewSingleBase=showNewSingle;
+showNewSingle=function(d){
+  showNewSingleBase(d);
+  const m=isMagneticPhone(d);
+  showNewOption("wirelessLink","MagBattery",m?{url:PRODUCTS.magBattery,label:"Voir la batterie magnétique UGREEN MagFlow 10 000 mAh"}:null,
+    "Option nomade sans fil : batterie magnétique UGREEN MagFlow Qi2, 10 000 mAh. Jusqu’à 25 W sur un téléphone compatible Qi2 25 W ; les autres modèles restent limités par leur standard. Vérifiez la compatibilité de la coque.");
+  showNewOption("carLink","MagMount",m?{url:PRODUCTS.magCarMount,label:"Voir le support voiture magnétique UGREEN MagFlow Qi2"}:null,
+    "Option sans fil en voiture : support magnétique UGREEN MagFlow Qi2, jusqu’à 25 W sur un téléphone compatible. Vérifiez sur la fiche produit le chargeur voiture à utiliser et la compatibilité de la coque.");
+};
 
 function chooseAnkerWall(d){
   if(d.proprietary || !/USB.*(PD|Power Delivery)/i.test(d.proto)) return null;
